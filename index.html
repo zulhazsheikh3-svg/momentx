@@ -4,17 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MomentX</title>
+  
+  <link rel="icon" id="app-favicon" type="image/png" href="https://via.placeholder.com/192/1877f2/ffffff?text=MX">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  
   <style>
     :root {
       --liquid-bg: #eef2f5;
-      --glass-card: rgba(255, 255, 255, 0.7);
+      --glass-card: rgba(255, 255, 255, 0.75);
       --glass-border: rgba(255, 255, 255, 0.9);
       --glass-shadow: 8px 8px 16px #d1d9e6, -8px -8px 16px #ffffff;
       --inset-shadow: inset 4px 4px 8px #d1d9e6, inset -4px -4px 8px #ffffff;
       --accent-blue: #1877f2;
       --text-main: #2d3748;
       --text-sub: #718096;
+      --danger: #e53e3e;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
@@ -24,8 +28,12 @@
     .app-header {
       width: 100%; max-width: 480px; padding: 12px 18px; display: flex; align-items: center; justify-content: space-between;
       position: sticky; top: 0; background: rgba(238, 242, 245, 0.85); backdrop-filter: blur(15px); z-index: 100;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.5);
     }
-    .brand-title { font-size: 1.5rem; font-weight: 800; color: var(--accent-blue); text-shadow: 1px 1px 2px #fff; }
+    .brand-box { display: flex; align-items: center; gap: 10px; }
+    .brand-logo-img { height: 36px; width: auto; max-width: 130px; object-fit: contain; }
+    .brand-title { font-size: 1.5rem; font-weight: 800; color: var(--accent-blue); }
+    
     .header-icons { display: flex; gap: 10px; }
     .icon-btn-3d {
       width: 40px; height: 40px; border-radius: 50%; background: var(--glass-card); border: 1px solid var(--glass-border);
@@ -36,76 +44,66 @@
 
     .main-container { width: 100%; max-width: 480px; padding: 0 12px; }
 
-    /* What's on your mind bar */
+    /* Auth Form */
+    .auth-card {
+      background: var(--glass-card); border: 1px solid var(--glass-border); border-radius: 24px;
+      box-shadow: var(--glass-shadow); padding: 25px 20px; margin-top: 40px; backdrop-filter: blur(10px);
+    }
+
+    /* Mind Trigger / Post Box */
     .mind-card {
       background: var(--glass-card); border: 1px solid var(--glass-border); border-radius: 20px; box-shadow: var(--glass-shadow);
       padding: 12px 16px; display: flex; align-items: center; gap: 12px; margin: 12px 0; backdrop-filter: blur(10px);
     }
-    .avatar-img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #fff; }
+    .avatar-img { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
     .mind-input-trigger {
-      flex: 1; padding: 10px 16px; background: rgba(255, 255, 255, 0.5); border: 1px solid var(--glass-border);
+      flex: 1; padding: 10px 16px; background: rgba(255, 255, 255, 0.6); border: 1px solid var(--glass-border);
       border-radius: 25px; color: var(--text-sub); font-size: 0.9rem; cursor: pointer; box-shadow: var(--inset-shadow);
     }
 
-    /* Story Section */
-    .stories-bar { display: flex; gap: 10px; overflow-x: auto; padding: 5px 0 15px; scrollbar-width: none; }
-    .story-card {
-      min-width: 95px; height: 145px; border-radius: 18px; background: var(--glass-card); border: 1px solid var(--glass-border);
-      box-shadow: var(--glass-shadow); display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
-      padding: 8px; position: relative; overflow: hidden; flex-shrink: 0; cursor: pointer;
-    }
-    .create-story-card { background: #fff; justify-content: center; gap: 6px; }
-    .add-icon-3d { width: 38px; height: 38px; border-radius: 50%; background: var(--accent-blue); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; box-shadow: 0 4px 10px rgba(24, 119, 242, 0.4); }
-    .story-avatar { width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--accent-blue); position: absolute; top: 8px; left: 8px; object-fit: cover; }
-    .story-name { font-size: 0.75rem; font-weight: 700; color: var(--text-main); text-align: center; }
-
-    /* Post Card */
+    /* Post Card (Twitter/X Style) */
     .post-card {
       background: var(--glass-card); border: 1px solid var(--glass-border); border-radius: 22px; box-shadow: var(--glass-shadow);
-      padding: 16px; margin-bottom: 16px; backdrop-filter: blur(12px);
+      padding: 16px; margin-bottom: 16px; backdrop-filter: blur(12px); position: relative;
     }
-    .post-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-    .user-info { display: flex; align-items: center; gap: 10px; }
-    .user-name { font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 4px; }
+    .post-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px; }
+    .user-info-box { display: flex; align-items: center; gap: 10px; }
+    .user-name { font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 4px; color: var(--text-main); }
+    .user-email { font-size: 0.78rem; color: var(--text-sub); }
     
     .badge-official { background: var(--accent-blue); color: #fff; font-size: 0.65rem; font-weight: 800; padding: 2px 6px; border-radius: 10px; }
-    .post-time { font-size: 0.75rem; color: var(--text-sub); }
-    .post-text { font-size: 0.95rem; line-height: 1.4; color: var(--text-main); margin-bottom: 10px; }
-    .post-media { width: 100%; border-radius: 16px; max-height: 380px; object-fit: cover; border: 1px solid #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+    .post-text { font-size: 0.95rem; line-height: 1.45; color: var(--text-main); margin-bottom: 10px; white-space: pre-wrap; }
+    .post-media { width: 100%; border-radius: 16px; max-height: 380px; object-fit: cover; border: 1px solid #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-top: 5px; }
 
     .post-footer { display: flex; justify-content: space-around; padding-top: 10px; margin-top: 10px; border-top: 1px solid rgba(0,0,0,0.05); color: var(--text-sub); font-size: 0.88rem; }
-    .post-action-btn { display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 6px 12px; border-radius: 12px; }
-    .post-action-btn:hover { background: rgba(255,255,255,0.6); color: var(--accent-blue); }
+    .post-action-btn { display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 6px 12px; border-radius: 12px; transition: 0.2s; }
+    .post-action-btn:hover { background: rgba(255,255,255,0.8); color: var(--accent-blue); }
+    .post-action-btn.liked { color: var(--danger); }
 
     /* Bottom Navigation Bar */
     .bottom-nav {
       position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 440px; height: 65px;
-      background: rgba(255, 255, 255, 0.8); border: 1px solid var(--glass-border); border-radius: 35px; box-shadow: var(--glass-shadow);
+      background: rgba(255, 255, 255, 0.85); border: 1px solid var(--glass-border); border-radius: 35px; box-shadow: var(--glass-shadow);
       backdrop-filter: blur(20px); display: flex; align-items: center; justify-content: space-around; z-index: 200;
     }
-    .nav-item { color: var(--text-sub); font-size: 1.2rem; cursor: pointer; }
+    .nav-item { color: var(--text-sub); font-size: 1.25rem; cursor: pointer; padding: 10px; }
     .nav-item.active { color: var(--accent-blue); }
     .nav-center-btn {
       width: 48px; height: 48px; border-radius: 50%; background: var(--accent-blue); color: #fff;
-      display: flex; align-items: center; justify-content: center; font-size: 1.3rem; box-shadow: 0 4px 15px rgba(24, 119, 242, 0.4);
+      display: flex; align-items: center; justify-content: center; font-size: 1.3rem; box-shadow: 0 4px 15px rgba(24, 119, 242, 0.4); cursor: pointer;
     }
 
-    /* Facebook Style Side Menu Drawer */
+    /* Side Menu & Settings Drawer */
     .side-drawer {
       position: fixed; top: 0; right: -100%; width: 85%; max-width: 380px; height: 100%; background: var(--liquid-bg);
       box-shadow: -10px 0 30px rgba(0,0,0,0.15); z-index: 1000; transition: 0.3s ease; padding: 20px; overflow-y: auto;
     }
     .side-drawer.open { right: 0; }
     .drawer-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-    .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-    .menu-card {
-      background: var(--glass-card); border: 1px solid var(--glass-border); border-radius: 16px; padding: 14px;
-      box-shadow: var(--glass-shadow); display: flex; flex-direction: column; gap: 8px; font-weight: 700; font-size: 0.9rem; cursor: pointer;
-    }
-    .menu-card i { font-size: 1.4rem; color: var(--accent-blue); }
-    .menu-list-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: var(--glass-card); border-radius: 14px; margin-bottom: 8px; border: 1px solid var(--glass-border); box-shadow: var(--glass-shadow); font-weight: 600; cursor: pointer; }
+    .settings-group { background: var(--glass-card); border-radius: 16px; border: 1px solid var(--glass-border); padding: 15px; margin-bottom: 15px; box-shadow: var(--glass-shadow); }
+    .settings-title { font-weight: 700; font-size: 0.9rem; color: var(--text-sub); margin-bottom: 10px; }
 
-    /* Modal Post Creator */
+    /* Modal Post Creator & Settings */
     .modal-overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px);
       display: none; align-items: center; justify-content: center; z-index: 1000;
@@ -114,34 +112,44 @@
       background: var(--liquid-bg); border: 1px solid var(--glass-border); border-radius: 24px; padding: 20px;
       width: 90%; max-width: 420px; box-shadow: var(--glass-shadow);
     }
-    input, textarea, select {
-      width: 100%; padding: 12px; background: rgba(255, 255, 255, 0.6); border: 1px solid var(--glass-border);
-      border-radius: 14px; outline: none; margin-top: 8px; margin-bottom: 12px; box-shadow: var(--inset-shadow);
+    input, textarea {
+      width: 100%; padding: 12px; background: rgba(255, 255, 255, 0.7); border: 1px solid var(--glass-border);
+      border-radius: 14px; outline: none; margin-top: 6px; margin-bottom: 12px; box-shadow: var(--inset-shadow); font-size: 0.95rem;
     }
     .btn-3d-primary {
       width: 100%; padding: 12px; background: var(--accent-blue); color: white; font-weight: 700; border: none;
-      border-radius: 14px; box-shadow: 0 4px 15px rgba(24, 119, 242, 0.3); cursor: pointer; transition: 0.2s;
+      border-radius: 14px; box-shadow: 0 4px 15px rgba(24, 119, 242, 0.3); cursor: pointer; transition: 0.2s; text-align: center;
     }
+    .btn-3d-primary:active { transform: scale(0.98); }
+    .btn-delete { background: var(--danger); box-shadow: 0 4px 15px rgba(229, 62, 62, 0.3); }
   </style>
 </head>
 <body>
 
-  <!-- Top Header -->
+  <!-- Top App Header -->
   <div class="app-header">
-    <div class="brand-title">MomentX</div>
+    <div class="brand-box">
+      <img id="header-logo-img" src="" class="brand-logo-img" style="display: none;" alt="MomentX">
+      <span id="header-logo-text" class="brand-title">MomentX</span>
+    </div>
     <div class="header-icons">
-      <div class="icon-btn-3d"><i class="fa-solid fa-magnifying-glass"></i></div>
-      <div class="icon-btn-3d" onclick="toggleDrawer()"><i class="fa-solid fa-bars"></i></div>
+      <div class="icon-btn-3d" onclick="toggleDrawer()"><i class="fa-solid fa-gear"></i></div>
     </div>
   </div>
 
   <div class="main-container">
 
-    <!-- Auth Screen -->
-    <div id="screen-auth" class="post-card" style="margin-top: 30px;">
-      <h2 style="text-align: center; color: var(--accent-blue); margin-bottom: 15px;">স্বাগতম!</h2>
-      <input type="email" id="email" placeholder="ইমেইল দিন">
+    <!-- Auth Screen (Login / Signup) -->
+    <div id="screen-auth" class="auth-card">
+      <h2 style="text-align: center; color: var(--accent-blue); margin-bottom: 8px;">MomentX-এ স্বাগতম!</h2>
+      <p style="text-align: center; color: var(--text-sub); font-size: 0.85rem; margin-bottom: 20px;">আপনার অ্যাকাউন্টে সাইন ইন করুন</p>
+      
+      <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-sub);">ইমেইল ঠিকানা</label>
+      <input type="email" id="email" placeholder="আপনার ইমেইল দিন">
+      
+      <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-sub);">পাসওয়ার্ড</label>
       <input type="password" id="password" placeholder="পাসওয়ার্ড">
+      
       <button class="btn-3d-primary" onclick="login()">লগইন করুন</button>
       <button class="btn-3d-primary" style="background: transparent; border: 1px solid var(--accent-blue); color: var(--accent-blue); margin-top: 10px;" onclick="signUp()">নতুন অ্যাকাউন্ট তৈরি করুন</button>
     </div>
@@ -149,27 +157,18 @@
     <!-- Feed Screen -->
     <div id="screen-feed" style="display: none;">
       
-      <!-- Mind Trigger Bar -->
+      <!-- Twitter Style Post Input Trigger -->
       <div class="mind-card">
         <img id="my-avatar-feed" src="https://via.placeholder.com/40" class="avatar-img">
-        <div class="mind-input-trigger" onclick="openPostModal()">What's on your mind?</div>
-        <i class="fa-solid fa-images" style="color: #45bd62; font-size: 1.2rem; cursor: pointer;" onclick="openPostModal()"></i>
+        <div class="mind-input-trigger" onclick="openPostModal()">What's happening?</div>
+        <i class="fa-solid fa-image" style="color: var(--accent-blue); font-size: 1.2rem; cursor: pointer;" onclick="openPostModal()"></i>
       </div>
 
-      <!-- Stories Bar -->
-      <div class="stories-bar">
-        <div class="story-card create-story-card" onclick="openPostModal()">
-          <div class="add-icon-3d">+</div>
-          <div class="story-name">Create story</div>
-        </div>
-        <div class="story-card">
-          <img src="https://via.placeholder.com/40" class="story-avatar">
-          <div class="story-name">Kayes Chowdhury</div>
-        </div>
+      <!-- Realtime Posts Container -->
+      <div id="posts-container">
+        <p style="text-align: center; color: var(--text-sub); margin-top: 20px;">পোস্ট লোড হচ্ছে...</p>
       </div>
 
-      <!-- Posts List -->
-      <div id="posts-container"></div>
     </div>
 
   </div>
@@ -177,74 +176,75 @@
   <!-- Bottom Navigation -->
   <div class="bottom-nav" id="bottom-nav-bar" style="display: none;">
     <div class="nav-item active" onclick="showScreen('feed')"><i class="fa-solid fa-house"></i></div>
-    <div class="nav-item" onclick="openDrawer()"><i class="fa-solid fa-users"></i></div>
-    <div class="nav-center-btn" onclick="openPostModal()"><i class="fa-solid fa-plus"></i></div>
-    <div class="nav-item"><i class="fa-solid fa-bell"></i></div>
-    <div class="nav-item" onclick="toggleDrawer()"><i class="fa-solid fa-bars"></i></div>
+    <div class="nav-item" onclick="toggleDrawer()"><i class="fa-solid fa-user"></i></div>
+    <div class="nav-center-btn" onclick="openPostModal()"><i class="fa-solid fa-pen"></i></div>
+    <div class="nav-item" onclick="toggleDrawer()"><i class="fa-solid fa-gear"></i></div>
   </div>
 
-  <!-- Facebook Style Side Drawer -->
+  <!-- Side Drawer (Settings & Profile Manager) -->
   <div class="side-drawer" id="side-drawer">
     <div class="drawer-header">
-      <h2 style="color: var(--text-main);">Menu</h2>
+      <h3 style="color: var(--text-main);">Settings & Profile</h3>
       <div class="icon-btn-3d" onclick="toggleDrawer()"><i class="fa-solid fa-xmark"></i></div>
     </div>
 
-    <div class="menu-list-item" style="background: #fff;">
-      <img id="drawer-user-img" src="https://via.placeholder.com/40" class="avatar-img">
-      <div>
-        <div id="drawer-user-name" style="font-size: 1rem; font-weight: 700;">Sheikh Kayes</div>
-        <div style="font-size: 0.75rem; color: var(--text-sub);">See your profile</div>
-      </div>
+    <!-- User Profile Settings -->
+    <div class="settings-group">
+      <div class="settings-title"><i class="fa-solid fa-user-gear"></i> প্রোফাইল সেটিংস</div>
+      <label style="font-size: 0.8rem;">আপনার নাম:</label>
+      <input type="text" id="setting-name" placeholder="আপনার নাম লিখুন">
+      
+      <label style="font-size: 0.8rem;">প্রোফাইল পিকচার URL:</label>
+      <input type="text" id="setting-photo" placeholder="https://i.ibb.co/photo.jpg">
+      
+      <button class="btn-3d-primary" style="padding: 8px; font-size: 0.85rem;" onclick="saveProfileSettings()">সেভ করুন</button>
     </div>
 
-    <h4 style="margin: 15px 0 10px; color: var(--text-sub);">Your shortcuts</h4>
-    <div class="menu-grid">
-      <div class="menu-card"><i class="fa-solid fa-users-rays"></i> Groups</div>
-      <div class="menu-card"><i class="fa-solid fa-bookmark"></i> Saved</div>
-      <div class="menu-card"><i class="fa-solid fa-clock-rotate-left"></i> Memories</div>
-      <div class="menu-card"><i class="fa-solid fa-store"></i> Marketplace</div>
+    <!-- App Logo Settings -->
+    <div class="settings-group">
+      <div class="settings-title"><i class="fa-solid fa-image"></i> অ্যাপ লোগো পরিবর্তন</div>
+      <input type="text" id="logo-url-input" placeholder="লোগোর ছবি লিংক বসান">
+      <button class="btn-3d-primary" style="padding: 8px; font-size: 0.85rem;" onclick="updateAppLogo()">লোগো সেভ করুন</button>
     </div>
 
-    <h4 style="margin: 15px 0 10px; color: var(--text-sub);">Settings & Support</h4>
-    <div class="menu-list-item"><i class="fa-solid fa-gear" style="color: var(--accent-blue);"></i> Settings & Privacy</div>
-    <div class="menu-list-item"><i class="fa-solid fa-circle-question" style="color: var(--accent-blue);"></i> Help & Support</div>
-    <div class="menu-list-item" onclick="logout()" style="color: #e53e3e;"><i class="fa-solid fa-right-from-bracket"></i> Log Out</div>
+    <div class="btn-3d-primary btn-delete" onclick="logout()" style="margin-top: 20px;">
+      <i class="fa-solid fa-right-from-bracket"></i> লগআউট করুন
+    </div>
   </div>
 
-  <!-- Post Creation Modal -->
+  <!-- Post Creation Modal (Twitter Style) -->
   <div class="modal-overlay" id="post-modal">
     <div class="modal-box">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-        <h3 style="color: var(--text-main);">Create Post</h3>
+        <h3 style="color: var(--text-main);">নতুন পোস্ট তৈরি করুন</h3>
         <div class="icon-btn-3d" onclick="closePostModal()"><i class="fa-solid fa-xmark"></i></div>
       </div>
-      <textarea id="post-input" rows="4" placeholder="What's on your mind?"></textarea>
+      <textarea id="post-input" rows="4" placeholder="What's happening?"></textarea>
       
-      <div style="display: flex; gap: 10px; margin-bottom: 15px; align-items: center;">
-        <i class="fa-solid fa-image" style="color: #45bd62; font-size: 1.4rem;"></i>
-        <input type="file" id="media-file" accept="image/*,video/*" style="margin: 0;">
+      <div style="margin-bottom: 15px;">
+        <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-sub);">ছবি/ভিডিও সিলেক্ট করুন:</label>
+        <input type="file" id="media-file" accept="image/*,video/*">
       </div>
 
-      <button class="btn-3d-primary" id="post-btn" onclick="createPost()">Post</button>
+      <button class="btn-3d-primary" id="post-btn" onclick="createPost()">পোস্ট করুন</button>
     </div>
   </div>
 
-  <!-- Firebase Integration -->
+  <!-- Firebase Database Script -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, doc, setDoc, getDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, doc, setDoc, getDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy, serverTimestamp, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
     import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
+    // Firebase Config
     const firebaseConfig = {
       apiKey: "AIzaSyAM_3hf8tv2vYZRLyo7pEjjV5T_WiSaji0",
       authDomain: "momentx-b9ff7.firebaseapp.com",
       projectId: "momentx-b9ff7",
       storageBucket: "momentx-b9ff7.firebasestorage.app",
       messagingSenderId: "519993726054",
-      appId: "1:519993726054:web:ae6838f83679b3c73789a7",
-      measurementId: "G-06024PXW7Q"
+      appId: "1:519993726054:web:ae6838f83679b3c73789a7"
     };
 
     const app = initializeApp(firebaseConfig);
@@ -259,6 +259,7 @@
     window.openPostModal = () => { document.getElementById('post-modal').style.display = 'flex'; };
     window.closePostModal = () => { document.getElementById('post-modal').style.display = 'none'; };
 
+    // 1. Auth Logic
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         currentUser = user;
@@ -266,7 +267,7 @@
         document.getElementById('screen-feed').style.display = 'block';
         document.getElementById('bottom-nav-bar').style.display = 'flex';
         loadUserProfile();
-        listenPosts();
+        listenToPosts();
       } else {
         document.getElementById('screen-auth').style.display = 'block';
         document.getElementById('screen-feed').style.display = 'none';
@@ -277,82 +278,136 @@
     window.signUp = async () => {
       const e = document.getElementById('email').value.trim();
       const p = document.getElementById('password').value.trim();
-      if(!e || !p) return alert("ইমেইল ও পাসওয়ার্ড দিন");
+      if(!e || !p) return alert("ইমেইল ও পাসওয়ার্ড দিন!");
       try {
         const res = await createUserWithEmailAndPassword(auth, e, p);
-        await setDoc(doc(db, "users", res.user.uid), { email: e, name: e.split('@')[0], photo: '' });
-        alert("অ্যাকাউন্ট তৈরি হয়েছে!");
+        await setDoc(doc(db, "users", res.user.uid), {
+          email: e,
+          name: e.split('@')[0],
+          photo: 'https://via.placeholder.com/150'
+        });
+        alert("অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে!");
       } catch (err) { alert(err.message); }
     };
 
     window.login = async () => {
       const e = document.getElementById('email').value.trim();
       const p = document.getElementById('password').value.trim();
-      if(!e || !p) return alert("ইমেইল ও পাসওয়ার্ড দিন");
+      if(!e || !p) return alert("ইমেইল ও পাসওয়ার্ড দিন!");
       try { await signInWithEmailAndPassword(auth, e, p); } catch (err) { alert(err.message); }
     };
 
     window.logout = () => signOut(auth);
 
-    window.createPost = async () => {
-      const text = document.getElementById('post-input').value;
-      const file = document.getElementById('media-file').files[0];
-      if(!text && !file) return alert("কিছু লিখুন অথবা ফাইল আপলোড করুন");
-
-      let mediaUrl = "", fileType = "";
-      if (file) {
-        const storageRef = ref(storage, `posts/${Date.now()}_${file.name}`);
-        const uploadRes = await uploadBytes(storageRef, file);
-        mediaUrl = await getDownloadURL(uploadRes.ref);
-        fileType = file.type.startsWith("video/") ? "video" : "image";
+    // 2. Profile Management
+    async function loadUserProfile() {
+      const userRef = doc(db, "users", currentUser.uid);
+      const docSnap = await getDoc(userRef);
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        document.getElementById('setting-name').value = data.name || '';
+        document.getElementById('setting-photo').value = data.photo || '';
+        document.getElementById('my-avatar-feed').src = data.photo || 'https://via.placeholder.com/40';
       }
+    }
 
-      const userSnap = await getDoc(doc(db, "users", currentUser.uid));
-      const userData = userSnap.data() || {};
-
-      await addDoc(collection(db, "posts"), {
-        content: text, mediaUrl, fileType,
-        userId: currentUser.uid,
-        userEmail: currentUser.email.toLowerCase(),
-        userName: userData.name || currentUser.email,
-        userPhoto: userData.photo || 'https://via.placeholder.com/40',
-        createdAt: serverTimestamp()
-      });
-
-      document.getElementById('post-input').value = '';
-      document.getElementById('media-file').value = '';
-      closePostModal();
+    window.saveProfileSettings = async () => {
+      const name = document.getElementById('setting-name').value.trim();
+      const photo = document.getElementById('setting-photo').value.trim();
+      
+      await updateDoc(doc(db, "users", currentUser.uid), { name, photo });
+      document.getElementById('my-avatar-feed').src = photo || 'https://via.placeholder.com/40';
+      alert("প্রোফাইল তথ্য আপডেট হয়েছে!");
+      toggleDrawer();
     };
 
-    function listenPosts() {
+    // 3. Create & Read Realtime Posts
+    window.createPost = async () => {
+      const text = document.getElementById('post-input').value.trim();
+      const file = document.getElementById('media-file').files[0];
+      const btn = document.getElementById('post-btn');
+
+      if(!text && !file) return alert("কিছু লিখুন অথবা ছবি আপলোড করুন!");
+
+      btn.innerText = "আপলোড হচ্ছে...";
+      btn.disabled = true;
+
+      try {
+        let mediaUrl = "", fileType = "";
+        if (file) {
+          const storageRef = ref(storage, `posts/${Date.now()}_${file.name}`);
+          const uploadRes = await uploadBytes(storageRef, file);
+          mediaUrl = await getDownloadURL(uploadRes.ref);
+          fileType = file.type.startsWith("video/") ? "video" : "image";
+        }
+
+        const userSnap = await getDoc(doc(db, "users", currentUser.uid));
+        const userData = userSnap.data() || {};
+
+        await addDoc(collection(db, "posts"), {
+          content: text,
+          mediaUrl, fileType,
+          userId: currentUser.uid,
+          userEmail: currentUser.email.toLowerCase(),
+          userName: userData.name || currentUser.email.split('@')[0],
+          userPhoto: userData.photo || 'https://via.placeholder.com/40',
+          likes: [],
+          createdAt: serverTimestamp()
+        });
+
+        document.getElementById('post-input').value = '';
+        document.getElementById('media-file').value = '';
+        closePostModal();
+      } catch(err) {
+        alert("পোস্ট করতে সমস্যা হয়েছে: " + err.message);
+      } finally {
+        btn.innerText = "পোস্ট করুন";
+        btn.disabled = false;
+      }
+    };
+
+    function listenToPosts() {
       const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
       onSnapshot(q, (snapshot) => {
         const container = document.getElementById('posts-container');
+        if(snapshot.empty) {
+          container.innerHTML = '<p style="text-align: center; color: var(--text-sub); margin-top: 20px;">কোনো পোস্ট পাওয়া যায়নি। প্রথম পোস্টটি আপনিই করুন!</p>';
+          return;
+        }
+
         container.innerHTML = '';
-        snapshot.forEach((doc) => {
-          const d = doc.data();
-          let media = d.mediaUrl ? (d.fileType === 'video' ? `<video src="${d.mediaUrl}" controls class="post-media"></video>` : `<img src="${d.mediaUrl}" class="post-media">`) : '';
+        snapshot.forEach((docSnap) => {
+          const d = docSnap.data();
+          const postId = docSnap.id;
+          const isLiked = d.likes && d.likes.includes(currentUser.uid);
+          const likeCount = d.likes ? d.likes.length : 0;
+
+          let mediaHTML = d.mediaUrl ? (d.fileType === 'video' ? `<video src="${d.mediaUrl}" controls class="post-media"></video>` : `<img src="${d.mediaUrl}" class="post-media">`) : '';
           
           let badgeHTML = (d.userEmail && d.userEmail.toLowerCase() === OFFICIAL_EMAIL.toLowerCase()) ? `<span class="badge-official"><i class="fa-solid fa-circle-check"></i> OFFICIAL</span>` : '';
+
+          let deleteBtn = (d.userId === currentUser.uid) ? `<i class="fa-solid fa-trash" onclick="deletePost('${postId}')" style="color: var(--danger); cursor: pointer; font-size: 0.9rem;"></i>` : '';
 
           container.innerHTML += `
             <div class="post-card">
               <div class="post-header">
-                <div class="user-info">
+                <div class="user-info-box">
                   <img src="${d.userPhoto || 'https://via.placeholder.com/40'}" class="avatar-img">
                   <div>
                     <div class="user-name">${d.userName} ${badgeHTML}</div>
-                    <div class="post-time">Just now</div>
+                    <div class="user-email">@${d.userEmail ? d.userEmail.split('@')[0] : 'user'}</div>
                   </div>
                 </div>
-                <i class="fa-solid fa-ellipsis" style="color: var(--text-sub); cursor: pointer;"></i>
+                ${deleteBtn}
               </div>
               <div class="post-text">${d.content || ''}</div>
-              ${media}
+              ${mediaHTML}
               <div class="post-footer">
-                <div class="post-action-btn"><i class="fa-regular fa-thumbs-up"></i> Like</div>
-                <div class="post-action-btn"><i class="fa-regular fa-comment"></i> Comment</div>
-                <div class="post-action-btn"><i class="fa-solid fa-share"></i> Share</div>
+                <div class="post-action-btn ${isLiked ? 'liked' : ''}" onclick="toggleLike('${postId}', ${isLiked})">
+                  <i class="fa-${isLiked ? 'solid' : 'regular'} fa-heart"></i> ${likeCount}
+                </div>
+                <div class="post-action-btn"><i class="fa-regular fa-comment"></i> 0</div>
+                <div class="post-action-btn"><i class="fa-solid fa-share"></i></div>
               </div>
             </div>
           `;
@@ -360,17 +415,45 @@
       });
     }
 
-    async function loadUserProfile() {
-      const docSnap = await getDoc(doc(db, "users", currentUser.uid));
-      if (docSnap.exists()) {
-        const d = docSnap.data();
-        if(d.name) document.getElementById('drawer-user-name').innerText = d.name;
-        if(d.photo) {
-          document.getElementById('my-avatar-feed').src = d.photo;
-          document.getElementById('drawer-user-img').src = d.photo;
-        }
+    // 4. Like & Delete Features
+    window.toggleLike = async (postId, isLiked) => {
+      const postRef = doc(db, "posts", postId);
+      if(isLiked) {
+        await updateDoc(postRef, { likes: arrayRemove(currentUser.uid) });
+      } else {
+        await updateDoc(postRef, { likes: arrayUnion(currentUser.uid) });
+      }
+    };
+
+    window.deletePost = async (postId) => {
+      if(confirm("আপনি কি নিশ্চিত যে এই পোস্টটি ডিলিট করতে চান?")) {
+        await deleteDoc(doc(db, "posts", postId));
+      }
+    };
+
+    // 5. App Logo Customization
+    window.updateAppLogo = () => {
+      const url = document.getElementById('logo-url-input').value.trim();
+      if(!url) return alert("সঠিক URL বসান!");
+      localStorage.setItem('momentx_app_logo', url);
+      applySavedLogo(url);
+      alert("লোগো পরিবর্তিত হয়েছে!");
+      toggleDrawer();
+    };
+
+    function applySavedLogo(url) {
+      if(url) {
+        const logoImg = document.getElementById('header-logo-img');
+        logoImg.src = url;
+        logoImg.style.display = 'block';
+        document.getElementById('header-logo-text').style.display = 'none';
+        document.getElementById('app-favicon').href = url;
       }
     }
+
+    const savedLogo = localStorage.getItem('momentx_app_logo');
+    if(savedLogo) applySavedLogo(savedLogo);
+
   </script>
 </body>
-    </html>
+  </html>
