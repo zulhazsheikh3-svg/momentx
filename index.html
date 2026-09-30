@@ -5,80 +5,171 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MomentX</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background: linear-gradient(135deg, #0f172a, #1e1b4b, #311042); color: #fff; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 20px; }
-    h1 { margin-bottom: 20px; color: #a855f7; text-shadow: 0 0 10px rgba(168, 85, 247, 0.5); }
-    
-    /* Liquid Glass Theme Card */
-    .glass-card {
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 16px;
-      padding: 24px;
-      width: 100%;
-      max-width: 420px;
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-      margin-bottom: 20px;
+    :root {
+      --bg-gradient: linear-gradient(135deg, #0f172a, #1e1b4b, #311042);
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --card-border: rgba(255, 255, 255, 0.15);
+      --text-color: #ffffff;
+      --accent-color: #a855f7;
+      --btn-gradient: linear-gradient(90deg, #8b5cf6, #ec4899);
     }
-    
-    input, textarea, button {
-      width: 100%; padding: 12px; margin-top: 10px; border-radius: 8px; border: none; outline: none;
-    }
-    input, textarea {
-      background: rgba(255, 255, 255, 0.1); color: #fff; border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-    input::placeholder, textarea::placeholder { color: #cbd5e1; }
-    button {
-      background: linear-gradient(90deg, #8b5cf6, #ec4899); color: white; font-weight: bold; cursor: pointer; transition: 0.3s;
-    }
-    button:hover { opacity: 0.9; transform: scale(1.02); }
-    .btn-secondary { background: rgba(255,255,255,0.2); margin-top: 5px; }
 
-    /* Post Feed Styles */
-    .post-item {
-      background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 15px; margin-top: 15px; word-break: break-word;
+    /* Themes */
+    body.theme-dark {
+      --bg-gradient: #0f172a;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --text-color: #f8fafc;
     }
-    .post-user { font-size: 0.85rem; color: #c084fc; font-weight: bold; }
-    .post-time { font-size: 0.7rem; color: #94a3b8; margin-bottom: 8px; }
-    .post-content { font-size: 1rem; color: #f8fafc; }
+    body.theme-light {
+      --bg-gradient: linear-gradient(135deg, #e2e8f0, #f1f5f9, #cbd5e1);
+      --card-bg: rgba(255, 255, 255, 0.7);
+      --card-border: rgba(0, 0, 0, 0.1);
+      --text-color: #0f172a;
+      --accent-color: #7c3aed;
+    }
+    body.theme-neon {
+      --bg-gradient: #050515;
+      --card-bg: rgba(236, 72, 153, 0.1);
+      --card-border: #ec4899;
+      --text-color: #00f0ff;
+      --accent-color: #ec4899;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background: var(--bg-gradient); color: var(--text-color); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 15px; transition: all 0.3s ease; }
+    
+    /* Header & Facebook-like Logo */
+    .app-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; margin-top: 10px; }
+    .brand-logo {
+      width: 50px; height: 50px; background: var(--btn-gradient); border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 32px; font-weight: 900; color: #fff; box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+    }
+    .brand-name { font-size: 1.8rem; font-weight: bold; color: var(--accent-color); letter-spacing: 1px; }
+
+    /* Navigation Bar */
+    .nav-bar { display: flex; gap: 10px; width: 100%; max-width: 450px; margin-bottom: 15px; }
+    .nav-btn { flex: 1; padding: 10px; background: var(--card-bg); border: 1px solid var(--card-border); color: var(--text-color); border-radius: 8px; font-weight: bold; cursor: pointer; }
+    .nav-btn.active { background: var(--accent-color); color: white; }
+
+    /* Glass Card Container */
+    .glass-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: 16px; padding: 20px; width: 100%; max-width: 450px;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2); margin-bottom: 20px;
+    }
+
+    input, textarea, select, button { width: 100%; padding: 12px; margin-top: 10px; border-radius: 8px; border: none; outline: none; }
+    input, textarea, select { background: rgba(255, 255, 255, 0.1); color: var(--text-color); border: 1px solid var(--card-border); }
+    button { background: var(--btn-gradient); color: white; font-weight: bold; cursor: pointer; transition: 0.2s; }
+    button:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-secondary { background: rgba(255,255,255,0.2); }
+
+    /* Post & Chat Item Styles */
+    .post-item, .chat-box { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 15px; margin-top: 12px; }
+    .post-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: #64748b; object-fit: cover; }
+    .post-media { width: 100%; max-height: 350px; border-radius: 8px; object-fit: cover; margin-top: 10px; }
+    
+    /* Chat Messages */
+    .msg-list { height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding: 10px; background: rgba(0,0,0,0.1); border-radius: 8px; }
+    .msg { max-width: 80%; padding: 8px 12px; border-radius: 12px; font-size: 0.9rem; }
+    .msg.sent { align-self: flex-end; background: #8b5cf6; color: white; }
+    .msg.received { align-self: flex-start; background: rgba(255,255,255,0.2); }
   </style>
 </head>
-<body>
+<body class="theme-glass">
 
-  <h1>MomentX</h1>
+  <!-- Header Section with Logo -->
+  <div class="app-header">
+    <div class="brand-logo">M</div>
+    <div class="brand-name">MomentX</div>
+  </div>
 
-  <!-- Authentication Box (Signup/Login) -->
+  <!-- Auth Container -->
   <div id="auth-box" class="glass-card">
-    <h2 style="text-align: center; margin-bottom: 10px;">লগইন / সাইনআপ</h2>
-    <input type="email" id="email" placeholder="ইমেইল লিখুন (যেমন: name@gmail.com)">
-    <input type="password" id="password" placeholder="পাসওয়ার্ড লিখুন">
+    <h2 style="text-align: center;">লগইন / সাইনআপ</h2>
+    <input type="email" id="email" placeholder="ইমেইল (যেমন: user@gmail.com)">
+    <input type="password" id="password" placeholder="পাসওয়ার্ড">
     <button onclick="login()">Login</button>
     <button class="btn-secondary" onclick="signUp()">Create Account</button>
   </div>
 
-  <!-- Post Creation Box -->
-  <div id="post-box" class="glass-card" style="display: none;">
-    <p>স্বাগতম, <span id="user-email" style="color: #a855f7;"></span></p>
-    <textarea id="post-input" rows="3" placeholder="নতুন কিছু শেয়ার করুন..."></textarea>
-    <button onclick="createPost()">Post</button>
-    <button class="btn-secondary" onclick="logout()">Logout</button>
-  </div>
+  <!-- Main App Interface (Hidden until login) -->
+  <div id="app-content" style="display: none; width: 100%; max-width: 450px;">
+    
+    <!-- Navigation Tabs -->
+    <div class="nav-bar">
+      <button class="nav-btn active" onclick="switchTab('feed')">Feed</button>
+      <button class="nav-btn" onclick="switchTab('chat')">Chat</button>
+      <button class="nav-btn" onclick="switchTab('settings')">Settings</button>
+    </div>
 
-  <!-- Feed Container -->
-  <div style="width: 100%; max-width: 420px;">
-    <h3 style="margin-top: 10px; color: #e2e8f0;">Recent Posts</h3>
-    <div id="posts-container"></div>
+    <!-- TAB 1: FEED -->
+    <div id="tab-feed">
+      <div class="glass-card">
+        <h3>নতুন পোস্ট লিখুন</h3>
+        <textarea id="post-input" rows="3" placeholder="মনের কথা প্রকাশ করুন..."></textarea>
+        <input type="file" id="media-file" accept="image/*,video/*">
+        <button id="post-btn" onclick="createPost()">Post</button>
+      </div>
+      <h3>Recent Posts</h3>
+      <div id="posts-container"></div>
+    </div>
+
+    <!-- TAB 2: CHAT -->
+    <div id="tab-chat" style="display: none;">
+      <div class="glass-card">
+        <h3>মেসেজিং / চ্যাট</h3>
+        <select id="chat-user-select">
+          <option value="">কার সাথে কথা বলবেন বেছে নিন...</option>
+        </select>
+        <div class="msg-list" id="msg-list">
+          <p style="text-align: center; color: #aaa; margin-top: 100px;">ইউজার সিলেক্ট করুন</p>
+        </div>
+        <div style="display: flex; gap: 5px;">
+          <input type="text" id="chat-input" placeholder="মেসেজ লিখুন...">
+          <button style="width: 80px;" onclick="sendMessage()">Send</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: SETTINGS & PROFILE CUSTOMIZATION -->
+    <div id="tab-settings" style="display: none;">
+      <div class="glass-card">
+        <h3>প্রোফাইল কাস্টমাইজ</h3>
+        <input type="text" id="profile-name" placeholder="আপনার সুন্দর নাম">
+        <input type="text" id="profile-bio" placeholder="বায়ো (Bio)">
+        <label style="font-size: 0.8rem; margin-top: 10px; display: block;">প্রোফাইল পিকচার ইউআরএল (URL):</label>
+        <input type="text" id="profile-pic" placeholder="https://image-link.com/photo.jpg">
+        <button onclick="saveProfile()">Save Profile</button>
+
+        <hr style="margin: 20px 0; border: 0.5px solid var(--card-border);">
+
+        <h3>থিম পরিবর্তন</h3>
+        <select id="theme-select" onchange="changeTheme(this.value)">
+          <option value="theme-glass">Liquid Glass (Default)</option>
+          <option value="theme-dark">Dark Mode</option>
+          <option value="theme-light">Light Glass</option>
+          <option value="theme-neon">Neon Purple</option>
+        </select>
+
+        <button class="btn-secondary" style="margin-top: 20px; background: #ef4444;" onclick="logout()">Logout</button>
+      </div>
+    </div>
+
   </div>
 
   <!-- Firebase Scripts -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, doc, setDoc, getDoc, onSnapshot, query, orderBy, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
-    // Firebase Config Details (Updated)
     const firebaseConfig = {
       apiKey: "AIzaSyAM_3hf8tv2vYZRLyo7pEjjV5T_WiSaji0",
       authDomain: "momentx-b9ff7.firebaseapp.com",
@@ -92,74 +183,181 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
+    const storage = getStorage(app);
 
-    // Auth State Monitor
-    onAuthStateChanged(auth, (user) => {
+    let currentUser = null;
+    let selectedChatUser = null;
+
+    // Auth Listener
+    onAuthStateChanged(auth, async (user) => {
       if (user) {
+        currentUser = user;
         document.getElementById('auth-box').style.display = 'none';
-        document.getElementById('post-box').style.display = 'block';
-        document.getElementById('user-email').innerText = user.email;
+        document.getElementById('app-content').style.display = 'block';
+        loadUserProfile();
+        loadUsersForChat();
+        listenPosts();
       } else {
         document.getElementById('auth-box').style.display = 'block';
-        document.getElementById('post-box').style.display = 'none';
+        document.getElementById('app-content').style.display = 'none';
       }
     });
 
-    // Sign Up
+    // Auth Functions
     window.signUp = async () => {
-      const email = document.getElementById('email').value;
-      const pass = document.getElementById('password').value;
-      if(!email || !pass) return alert("ইমেইল ও পাসওয়ার্ড দিন");
+      const e = document.getElementById('email').value;
+      const p = document.getElementById('password').value;
+      if(!e || !p) return alert("ইমেইল ও পাসওয়ার্ড দিন");
       try {
-        await createUserWithEmailAndPassword(auth, email, pass);
-        alert("অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে!");
-      } catch (e) { alert(e.message); }
+        const res = await createUserWithEmailAndPassword(auth, e, p);
+        await setDoc(doc(db, "users", res.user.uid), { email: e, name: e.split('@')[0], photo: '', bio: '' });
+        alert("অ্যাকাউন্ট তৈরি হয়েছে!");
+      } catch (err) { alert(err.message); }
     };
 
-    // Log In
     window.login = async () => {
-      const email = document.getElementById('email').value;
-      const pass = document.getElementById('password').value;
-      if(!email || !pass) return alert("ইমেইল ও পাসওয়ার্ড দিন");
-      try {
-        await signInWithEmailAndPassword(auth, email, pass);
-      } catch (e) { alert(e.message); }
+      const e = document.getElementById('email').value;
+      const p = document.getElementById('password').value;
+      try { await signInWithEmailAndPassword(auth, e, p); } catch (err) { alert(err.message); }
     };
 
-    // Log Out
     window.logout = () => signOut(auth);
+
+    // Tab Switcher
+    window.switchTab = (tabName) => {
+      ['feed', 'chat', 'settings'].forEach(t => {
+        document.getElementById(`tab-${t}`).style.display = t === tabName ? 'block' : 'none';
+      });
+      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+    };
+
+    // Theme Switcher
+    window.changeTheme = (themeClass) => {
+      document.body.className = themeClass;
+    };
+
+    // Profile Settings
+    async function loadUserProfile() {
+      const docSnap = await getDoc(doc(db, "users", currentUser.uid));
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        document.getElementById('profile-name').value = data.name || '';
+        document.getElementById('profile-bio').value = data.bio || '';
+        document.getElementById('profile-pic').value = data.photo || '';
+      }
+    }
+
+    window.saveProfile = async () => {
+      const name = document.getElementById('profile-name').value;
+      const bio = document.getElementById('profile-bio').value;
+      const photo = document.getElementById('profile-pic').value;
+      await setDoc(doc(db, "users", currentUser.uid), { name, bio, photo, email: currentUser.email }, { merge: true });
+      alert("প্রোফাইল সেভ হয়েছে!");
+    };
 
     // Create Post
     window.createPost = async () => {
       const text = document.getElementById('post-input').value;
-      if(!text.trim()) return alert("কিছু লিখুন!");
-      try {
-        await addDoc(collection(db, "posts"), {
-          content: text,
-          user: auth.currentUser.email,
-          createdAt: serverTimestamp()
-        });
-        document.getElementById('post-input').value = '';
-      } catch (e) { alert(e.message); }
+      const file = document.getElementById('media-file').files[0];
+      const btn = document.getElementById('post-btn');
+      if(!text && !file) return alert("কিছু লিখুন বা ফাইল দিন");
+
+      btn.disabled = true;
+      let mediaUrl = "", fileType = "";
+      if (file) {
+        const storageRef = ref(storage, `posts/${Date.now()}_${file.name}`);
+        const uploadRes = await uploadBytes(storageRef, file);
+        mediaUrl = await getDownloadURL(uploadRes.ref);
+        fileType = file.type.startsWith("video/") ? "video" : "image";
+      }
+
+      const userSnap = await getDoc(doc(db, "users", currentUser.uid));
+      const userData = userSnap.data() || {};
+
+      await addDoc(collection(db, "posts"), {
+        content: text, mediaUrl, fileType,
+        userId: currentUser.uid,
+        userName: userData.name || currentUser.email,
+        userPhoto: userData.photo || 'https://via.placeholder.com/40',
+        createdAt: serverTimestamp()
+      });
+
+      document.getElementById('post-input').value = '';
+      document.getElementById('media-file').value = '';
+      btn.disabled = false;
     };
 
-    // Live Feed Listener
-    const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
-    onSnapshot(q, (snapshot) => {
-      const postsContainer = document.getElementById('posts-container');
-      postsContainer.innerHTML = '';
-      snapshot.forEach((doc) => {
-        const data = doc.data();
-        const time = data.createdAt ? new Date(data.createdAt.seconds * 1000).toLocaleString() : 'Just now';
-        postsContainer.innerHTML += `
-          <div class="post-item">
-            <div class="post-user">${data.user || 'User'}</div>
-            <div class="post-time">${time}</div>
-            <div class="post-content">${data.content}</div>
-          </div>
-        `;
+    // Read Feed
+    function listenPosts() {
+      const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
+      onSnapshot(q, (snapshot) => {
+        const container = document.getElementById('posts-container');
+        container.innerHTML = '';
+        snapshot.forEach((doc) => {
+          const d = doc.data();
+          let media = d.mediaUrl ? (d.fileType === 'video' ? `<video src="${d.mediaUrl}" controls class="post-media"></video>` : `<img src="${d.mediaUrl}" class="post-media">`) : '';
+          container.innerHTML += `
+            <div class="post-item">
+              <div class="post-header">
+                <img src="${d.userPhoto || 'https://via.placeholder.com/40'}" class="user-avatar">
+                <div>
+                  <strong>${d.userName}</strong>
+                  <div style="font-size:0.7rem; color:#aaa;">${d.createdAt ? new Date(d.createdAt.seconds*1000).toLocaleTimeString() : 'Just now'}</div>
+                </div>
+              </div>
+              <div>${d.content || ''}</div>
+              ${media}
+            </div>
+          `;
+        });
       });
+    }
+
+    // Chat System
+    function loadUsersForChat() {
+      onSnapshot(collection(db, "users"), (snapshot) => {
+        const select = document.getElementById('chat-user-select');
+        select.innerHTML = '<option value="">কার সাথে কথা বলবেন বেছে নিন...</option>';
+        snapshot.forEach((doc) => {
+          if (doc.id !== currentUser.uid) {
+            select.innerHTML += `<option value="${doc.id}">${doc.data().name || doc.data().email}</option>`;
+          }
+        });
+      });
+    }
+
+    document.getElementById('chat-user-select').addEventListener('change', (e) => {
+      selectedChatUser = e.target.value;
+      if(selectedChatUser) listenMessages();
     });
+
+    window.sendMessage = async () => {
+      const txt = document.getElementById('chat-input').value;
+      if (!txt || !selectedChatUser) return alert("ইউজার বেছে নিন ও মেসেজ লিখুন");
+      const chatId = currentUser.uid < selectedChatUser ? `${currentUser.uid}_${selectedChatUser}` : `${selectedChatUser}_${currentUser.uid}`;
+      await addDoc(collection(db, "chats", chatId, "messages"), {
+        sender: currentUser.uid,
+        text: txt,
+        createdAt: serverTimestamp()
+      });
+      document.getElementById('chat-input').value = '';
+    };
+
+    function listenMessages() {
+      const chatId = currentUser.uid < selectedChatUser ? `${currentUser.uid}_${selectedChatUser}` : `${selectedChatUser}_${currentUser.uid}`;
+      const q = query(collection(db, "chats", chatId, "messages"), orderBy("createdAt", "asc"));
+      onSnapshot(q, (snapshot) => {
+        const msgList = document.getElementById('msg-list');
+        msgList.innerHTML = '';
+        snapshot.forEach((doc) => {
+          const m = doc.data();
+          const cls = m.sender === currentUser.uid ? 'sent' : 'received';
+          msgList.innerHTML += `<div class="msg ${cls}">${m.text}</div>`;
+        });
+        msgList.scrollTop = msgList.scrollHeight;
+      });
+    }
   </script>
 </body>
-</html>
+  </html>
