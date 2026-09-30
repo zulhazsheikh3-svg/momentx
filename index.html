@@ -1,595 +1,165 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MomentX - Liquid Glass Experience</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        :root {
-            /* Deep Dark Indigo Background for Liquid Glass Glow */
-            --bg-gradient: linear-gradient(135deg, #090d16 0%, #0d1527 50%, #060911 100%);
-            
-            /* Liquid Glass Variables */
-            --glass-bg: rgba(15, 23, 42, 0.65);
-            --glass-card: rgba(255, 255, 255, 0.04);
-            --glass-border: rgba(0, 242, 254, 0.22);
-            --glass-glow: rgba(0, 242, 254, 0.15);
-            
-            --accent-cyan: #00f2fe;
-            --accent-blue: #3b82f6;
-            --text-main: #f8fafc;
-            --text-sub: #94a3b8;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MomentX</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background: linear-gradient(135deg, #0f172a, #1e1b4b, #311042); color: #fff; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+    h1 { margin-bottom: 20px; color: #a855f7; text-shadow: 0 0 10px rgba(168, 85, 247, 0.5); }
+    
+    /* Liquid Glass Theme Card */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 16px;
+      padding: 24px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      margin-bottom: 20px;
+    }
+    
+    input, textarea, button {
+      width: 100%; padding: 12px; margin-top: 10px; border-radius: 8px; border: none; outline: none;
+    }
+    input, textarea {
+      background: rgba(255, 255, 255, 0.1); color: #fff; border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    input::placeholder, textarea::placeholder { color: #cbd5e1; }
+    button {
+      background: linear-gradient(90deg, #8b5cf6, #ec4899); color: white; font-weight: bold; cursor: pointer; transition: 0.3s;
+    }
+    button:hover { opacity: 0.9; transform: scale(1.02); }
+    .btn-secondary { background: rgba(255,255,255,0.2); margin-top: 5px; }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            user-select: none;
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
-        }
-
-        body {
-            background: var(--bg-gradient);
-            background-attachment: fixed;
-            color: var(--text-main);
-            padding-bottom: 90px;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        /* 1. HEADER */
-        .header {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 14px 18px;
-            background: rgba(9, 13, 22, 0.75);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--glass-border);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
-        }
-
-        .logo {
-            font-size: 20px;
-            font-weight: 900;
-            background: linear-gradient(45deg, var(--accent-cyan), var(--accent-blue));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 20px rgba(0, 242, 254, 0.3);
-        }
-
-        .icon-btn {
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(10px);
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-main);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .icon-btn:active { transform: scale(0.92); }
-
-        /* 2. STORY RIBBON */
-        .story-ribbon {
-            display: flex;
-            gap: 12px;
-            padding: 16px;
-            overflow-x: auto;
-            scrollbar-width: none;
-        }
-        .story-ribbon::-webkit-scrollbar { display: none; }
-
-        .story-card {
-            min-width: 95px;
-            height: 135px;
-            border-radius: 18px;
-            background: var(--glass-card);
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(12px);
-            position: relative;
-            overflow: hidden;
-            flex-shrink: 0;
-            cursor: pointer;
-        }
-        .story-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.75; }
-        .story-avatar {
-            position: absolute; top: 8px; left: 8px; width: 30px; height: 30px;
-            border-radius: 50%; border: 2px solid var(--accent-cyan); object-fit: cover;
-        }
-        .story-name {
-            position: absolute; bottom: 8px; left: 8px; right: 8px;
-            font-size: 10px; font-weight: 700; color: #fff;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-        }
-
-        /* 3. FEED TABS */
-        .feed-tabs { display: flex; padding: 0 16px 12px 16px; gap: 10px; }
-        .feed-tab {
-            flex: 1; padding: 10px; text-align: center;
-            background: var(--glass-card);
-            backdrop-filter: blur(15px);
-            border: 1px solid var(--glass-border);
-            border-radius: 14px; font-size: 12px;
-            font-weight: 800; color: var(--text-sub); cursor: pointer;
-        }
-        .feed-tab.active {
-            background: linear-gradient(45deg, var(--accent-cyan), var(--accent-blue));
-            color: #000; border: none;
-            box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
-        }
-
-        /* 4. POST CARD (CENTER FOCUS LIFT MOTION) */
-        .feed-container {
-            padding: 0 16px;
-            perspective: 1000px;
-        }
-
-        .post-card {
-            background: rgba(15, 23, 42, 0.55);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid var(--glass-border);
-            border-radius: 22px;
-            padding: 16px;
-            margin-bottom: 20px;
-            
-            /* Motion Properties */
-            transform: scale(0.95);
-            opacity: 0.65;
-            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1),
-                        opacity 0.4s ease,
-                        box-shadow 0.4s ease,
-                        border-color 0.4s ease;
-            will-change: transform, opacity;
-        }
-
-        .post-card.active-center {
-            transform: scale(1.02) translateY(-4px);
-            opacity: 1;
-            border-color: var(--accent-cyan);
-            box-shadow: 0 12px 35px rgba(0, 242, 254, 0.25);
-        }
-
-        .post-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-        .author-box { display: flex; align-items: center; gap: 10px; }
-        .author-avatar { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 1.5px solid var(--accent-cyan); }
-        .author-name { font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 4px; }
-        .post-time { font-size: 10px; color: var(--text-sub); }
-
-        .follow-btn {
-            padding: 6px 14px; background: rgba(0, 242, 254, 0.12); border: 1px solid var(--accent-cyan);
-            color: var(--accent-cyan); border-radius: 12px; font-size: 11px; font-weight: 800; cursor: pointer;
-        }
-        .post-text { font-size: 13.5px; line-height: 1.5; margin-bottom: 12px; color: #f1f5f9; }
-        .post-media { width: 100%; max-height: 380px; border-radius: 14px; object-fit: cover; margin-bottom: 12px; display: block; }
-
-        .post-actions {
-            display: flex; justify-content: space-around;
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
-            padding-top: 12px; color: var(--text-sub); font-size: 12px; font-weight: 700;
-        }
-        .action-item { display: flex; align-items: center; gap: 6px; cursor: pointer; }
-
-        /* 5. MODAL/OVERLAY VIEWS */
-        .overlay-view {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(9, 13, 22, 0.92);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
-            z-index: 4000;
-            display: none; flex-direction: column; padding: 20px; overflow-y: auto;
-        }
-        .view-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-
-        /* PROFILE VIEW SPECIFIC */
-        .profile-view-container {
-            background: rgba(15, 23, 42, 0.5);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            overflow: hidden;
-            margin-top: 10px;
-        }
-        .cover-photo { width: 100%; height: 125px; object-fit: cover; background: #1e293b; }
-        .profile-details { padding: 0 16px 16px 16px; }
-        .profile-top-row { display: flex; justify-content: space-between; align-items: flex-end; margin-top: -40px; margin-bottom: 12px; }
-        .p-avatar { width: 80px; height: 80px; border-radius: 50%; border: 3px solid #0d1527; box-shadow: 0 0 20px rgba(0, 242, 254, 0.4); object-fit: cover; }
-        .edit-profile-btn { padding: 8px 18px; background: rgba(0, 242, 254, 0.1); border: 1px solid var(--accent-cyan); color: var(--accent-cyan); backdrop-filter: blur(10px); border-radius: 20px; font-size: 12px; font-weight: 800; cursor: pointer; }
-        .p-name { font-size: 18px; font-weight: 900; }
-        .p-handle { font-size: 12px; color: var(--text-sub); margin-bottom: 8px; }
-        .p-bio { font-size: 13px; color: #e2e8f0; margin-bottom: 10px; line-height: 1.4; }
-        .p-stats { display: flex; gap: 15px; font-size: 12px; color: var(--text-sub); }
-        .p-stats span { color: var(--text-main); font-weight: 800; }
-
-        .profile-tabs { display: flex; border-top: 1px solid var(--glass-border); margin-top: 12px; }
-        .p-tab { flex: 1; text-align: center; padding: 12px 0; font-size: 12px; font-weight: 700; color: var(--text-sub); cursor: pointer; }
-        .p-tab.active { color: var(--accent-cyan); border-bottom: 2px solid var(--accent-cyan); }
-
-        /* CARD ITEMS */
-        .card-item {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 16px; background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--glass-border); backdrop-filter: blur(15px);
-            border-radius: 18px; margin-bottom: 12px; cursor: pointer; transition: all 0.3s ease;
-        }
-        .card-item:active { transform: scale(0.98); background: rgba(0, 242, 254, 0.08); }
-        .card-info { display: flex; align-items: center; gap: 12px; }
-
-        /* 6. BOTTOM NAVIGATION BAR WITH AUTO-HIDE ANIMATION */
-        .bottom-nav {
-            position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%);
-            width: 92%; height: 65px;
-            background: rgba(15, 23, 42, 0.75);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid var(--glass-border); border-radius: 35px; display: flex;
-            justify-content: space-around; align-items: center; z-index: 1000;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            padding: 0 8px;
-            
-            /* Smooth Hide/Show Transition */
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
-            will-change: transform, opacity;
-        }
-
-        /* Class applied when scrolling */
-        .bottom-nav.nav-hidden {
-            transform: translate(-50%, 110px); /* Moves down out of view */
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .nav-link { color: var(--text-sub); cursor: pointer; position: relative; display: flex; align-items: center; justify-content: center; width: 42px; height: 42px; }
-        .nav-link.active { color: var(--accent-cyan); }
-
-        .notification-badge {
-            position: absolute; top: 6px; right: 6px; width: 8px; height: 8px;
-            background: var(--accent-cyan); border-radius: 50%; box-shadow: 0 0 10px var(--accent-cyan);
-        }
-
-        .create-post-btn {
-            width: 48px; height: 48px; background: linear-gradient(45deg, var(--accent-cyan), var(--accent-blue));
-            border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center;
-            color: #000; cursor: pointer; box-shadow: 0 0 20px rgba(0, 242, 254, 0.5);
-            transform: translateY(-2px);
-        }
-    </style>
+    /* Post Feed Styles */
+    .post-item {
+      background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 15px; margin-top: 15px; word-break: break-word;
+    }
+    .post-user { font-size: 0.85rem; color: #c084fc; font-weight: bold; }
+    .post-time { font-size: 0.7rem; color: #94a3b8; margin-bottom: 8px; }
+    .post-content { font-size: 1rem; color: #f8fafc; }
+  </style>
 </head>
 <body>
 
-    <!-- HEADER -->
-    <div class="header">
-        <div class="logo">MomentX ⚡</div>
-        <div class="header-actions">
-            <div class="icon-btn" onclick="openView('settingsModal')">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-            </div>
-        </div>
-    </div>
+  <h1>MomentX</h1>
 
-    <!-- MAIN FEED CONTENT -->
-    <!-- STORY RIBBON -->
-    <div class="story-ribbon">
-        <div class="story-card" style="display:flex; flex-direction:column; align-items:center; justify-content:center; border:1px dashed var(--accent-cyan);" onclick="alert('স্টোরি আপলোড করুন')">
-            <div style="width:30px; height:30px; border-radius:50%; background:var(--accent-cyan); display:flex; align-items:center; justify-content:center; color:#000; font-weight:900;">+</div>
-            <span style="font-size:10px; font-weight:800; color:var(--accent-cyan); margin-top:5px;">Add Story</span>
-        </div>
-        <div class="story-card">
-            <img class="story-img" src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=300">
-            <img class="story-avatar" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100">
-            <span class="story-name">Ayesha</span>
-        </div>
-        <div class="story-card">
-            <img class="story-img" src="https://images.unsplash.com/photo-1578632767115-351597cf2477?w=300">
-            <img class="story-avatar" src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=100">
-            <span class="story-name">Boruto_Hub</span>
-        </div>
-    </div>
+  <!-- Authentication Box (Signup/Login) -->
+  <div id="auth-box" class="glass-card">
+    <h2 style="text-align: center; margin-bottom: 10px;">লগইন / সাইনআপ</h2>
+    <input type="email" id="email" placeholder="ইমেইল লিখুন">
+    <input type="password" id="password" placeholder="পাসওয়ার্ড লিখুন">
+    <button onclick="login()">Login</button>
+    <button class="btn-secondary" onclick="signUp()">Create Account</button>
+  </div>
 
-    <!-- FEED TABS -->
-    <div class="feed-tabs">
-        <div class="feed-tab active" onclick="switchFeedTab(this)">🔥 For You</div>
-        <div class="feed-tab" onclick="switchFeedTab(this)">👥 Following</div>
-    </div>
+  <!-- Post Creation Box -->
+  <div id="post-box" class="glass-card" style="display: none;">
+    <p>স্বাগতম, <span id="user-email" style="color: #a855f7;"></span></p>
+    <textarea id="post-input" rows="3" placeholder="নতুন কিছু শেয়ার করুন..."></textarea>
+    <button onclick="createPost()">Post</button>
+    <button class="btn-secondary" onclick="logout()">Logout</button>
+  </div>
 
-    <!-- POST FEED -->
-    <div class="feed-container">
-        
-        <!-- Post 1 -->
-        <div class="post-card">
-            <div class="post-header">
-                <div class="author-box">
-                    <img class="author-avatar" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100">
-                    <div>
-                        <div class="author-name">Kayes Chowdhury <span style="color:var(--accent-cyan); font-size:11px;">✓</span></div>
-                        <div class="post-time">🔥 Top Ranked • ২ ঘণ্টা আগে</div>
-                    </div>
-                </div>
-                <button class="follow-btn" onclick="toggleFollow(this)">+ Follow</button>
-            </div>
-            <div class="post-text">নতুন এনিমেশন ও প্রজেক্ট সেটআপ সম্পূর্ণ! কেমন লাগছে থিমটা? ⚡</div>
-            <img class="post-media" src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600">
-            <div class="post-actions">
-                <div class="action-item" onclick="likePost(this)">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-                    <span class="like-count">382</span>
-                </div>
-                <div class="action-item">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-                    <span>45</span>
-                </div>
-                <div class="action-item">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
-                    <span>Share</span>
-                </div>
-            </div>
-        </div>
+  <!-- Feed Container -->
+  <div style="width: 100%; max-width: 420px;">
+    <h3 style="margin-top: 10px; color: #e2e8f0;">Recent Posts</h3>
+    <div id="posts-container"></div>
+  </div>
 
-        <!-- Post 2 -->
-        <div class="post-card">
-            <div class="post-header">
-                <div class="author-box">
-                    <img class="author-avatar" src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=100">
-                    <div>
-                        <div class="author-name">Boruto Two Blue Vortex</div>
-                        <div class="post-time">৫ ঘণ্টা আগে</div>
-                    </div>
-                </div>
-                <button class="follow-btn" onclick="toggleFollow(this)">+ Follow</button>
-            </div>
-            <div class="post-text">Liquid Glassmorphism UI ডিজাইন এখন আমাদের অ্যাপে লাইভ! স্ক্রোল করে পুরো মোশন ভাইব নিন। 🔥</div>
-            <img class="post-media" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600">
-            <div class="post-actions">
-                <div class="action-item" onclick="likePost(this)">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-                    <span class="like-count">1.5K</span>
-                </div>
-                <div class="action-item">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-                    <span>120</span>
-                </div>
-                <div class="action-item">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
-                    <span>Share</span>
-                </div>
-            </div>
-        </div>
+  <!-- Firebase Scripts -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        <!-- Post 3 (For Long Scroll Testing) -->
-        <div class="post-card">
-            <div class="post-header">
-                <div class="author-box">
-                    <img class="author-avatar" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100">
-                    <div>
-                        <div class="author-name">Ayesha Rahman</div>
-                        <div class="post-time">৮ ঘণ্টা আগে</div>
-                    </div>
-                </div>
-                <button class="follow-btn" onclick="toggleFollow(this)">+ Follow</button>
-            </div>
-            <div class="post-text">নতুন নেভিগেশন বার টেস্ট করার জন্য নিচের দিকে স্ক্রোল করুন। স্ক্রোল থামলেই বারটি আবার ভাসবে। ✨</div>
-            <img class="post-media" src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=600">
-            <div class="post-actions">
-                <div class="action-item" onclick="likePost(this)">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-                    <span class="like-count">920</span>
-                </div>
-                <div class="action-item">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-                    <span>88</span>
-                </div>
-                <div class="action-item">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
-                    <span>Share</span>
-                </div>
-            </div>
-        </div>
+    // Firebase Config Details
+    const firebaseConfig = {
+      apiKey: "AIzaSyAM_3hf8tv2vYZRLyo7pEjjV52i-SgA31w",
+      authDomain: "momentx-b9ff7.firebaseapp.com",
+      projectId: "momentx-b9ff7",
+      storageBucket: "momentx-b9ff7.firebasestorage.app",
+      messagingSenderId: "519993726054",
+      appId: "1:519993726054:web:ae6838f8367988aa5c707d",
+      measurementId: "G-06024PXW7Q"
+    };
 
-    </div>
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-    <!-- OVERLAY VIEWS -->
-    <!-- PROFILE MODAL -->
-    <div class="overlay-view" id="profileModal">
-        <div class="view-header">
-            <h2 style="font-size: 18px; font-weight: 900; color: var(--accent-cyan);">My Profile</h2>
-            <button onclick="closeView('profileModal')" style="background:transparent; border:none; color:var(--text-main); font-size:22px; cursor:pointer;">✕</button>
-        </div>
+    // Auth State Monitor
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        document.getElementById('auth-box').style.display = 'none';
+        document.getElementById('post-box').style.display = 'block';
+        document.getElementById('user-email').innerText = user.email;
+      } else {
+        document.getElementById('auth-box').style.display = 'block';
+        document.getElementById('post-box').style.display = 'none';
+      }
+    });
 
-        <div class="profile-view-container">
-            <img class="cover-photo" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800" alt="Cover">
-            <div class="profile-details">
-                <div class="profile-top-row">
-                    <img class="p-avatar" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100">
-                    <button class="edit-profile-btn" onclick="alert('Edit Profile অপশন খুলবে')">Edit Profile</button>
-                </div>
-                <div class="p-name">Kayes Chowdhury <span style="color:var(--accent-cyan); font-size:13px;">✓</span></div>
-                <div class="p-handle">@kayes_sigma</div>
-                <div class="p-bio">Anime & Tech Creator ⚡ MomentX Founder. Creating the ultimate Liquid Glass Experience.</div>
-                <div class="p-stats">
-                    <div><span>142</span> Following</div>
-                    <div><span>1.2K</span> Followers</div>
-                </div>
-            </div>
-            
-            <div class="profile-tabs">
-                <div class="p-tab active">Posts</div>
-                <div class="p-tab">Replies</div>
-                <div class="p-tab">Highlights</div>
-                <div class="p-tab">Media</div>
-                <div class="p-tab">Likes</div>
-            </div>
-        </div>
-    </div>
+    // Sign Up
+    window.signUp = async () => {
+      const email = document.getElementById('email').value;
+      const pass = document.getElementById('password').value;
+      if(!email || !pass) return alert("ইমেইল ও পাসওয়ার্ড দিন");
+      try {
+        await createUserWithEmailAndPassword(auth, email, pass);
+        alert("অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে!");
+      } catch (e) { alert(e.message); }
+    };
 
-    <!-- NOTIFICATIONS MODAL -->
-    <div class="overlay-view" id="notificationsModal">
-        <div class="view-header">
-            <h2 style="font-size: 18px; font-weight: 900; color: var(--accent-cyan);">Notifications</h2>
-            <button onclick="closeView('notificationsModal')" style="background:transparent; border:none; color:var(--text-main); font-size:22px; cursor:pointer;">✕</button>
-        </div>
+    // Log In
+    window.login = async () => {
+      const email = document.getElementById('email').value;
+      const pass = document.getElementById('password').value;
+      if(!email || !pass) return alert("ইমেইল ও পাসওয়ার্ড দিন");
+      try {
+        await signInWithEmailAndPassword(auth, email, pass);
+      } catch (e) { alert(e.message); }
+    };
 
-        <div class="card-item" style="border-color: var(--accent-cyan);">
-            <div class="card-info">
-                <div style="width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(45deg, var(--accent-cyan), var(--accent-blue)); display: flex; align-items: center; justify-content: center; color: #000; font-weight: 900;">⚡</div>
-                <div>
-                    <div style="font-size: 13.5px; font-weight: 800; color: var(--accent-cyan);">System Update</div>
-                    <div style="font-size: 11.5px; color: #e2e8f0; margin-top: 2px;">MomentX v2.0 Liquid Glass UI অ্যাপডেট রিলিজ হয়েছে!</div>
-                </div>
-            </div>
-        </div>
+    // Log Out
+    window.logout = () => signOut(auth);
 
-        <div class="card-item">
-            <div class="card-info">
-                <img src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=100" style="width:38px; height:38px; border-radius:50%; object-fit:cover;">
-                <div>
-                    <div style="font-size: 13px; font-weight: 800;">Boruto_Hub নতুন একটি পোস্ট করেছে</div>
-                    <div style="font-size: 11px; color: var(--text-sub); margin-top: 2px;">১০ মিনিট আগে</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- SETTINGS MODAL -->
-    <div class="overlay-view" id="settingsModal">
-        <div class="view-header">
-            <h2 style="font-size: 18px; font-weight: 900; color: var(--accent-cyan);">Settings and privacy</h2>
-            <button onclick="closeView('settingsModal')" style="background:transparent; border:none; color:var(--text-main); font-size:22px; cursor:pointer;">✕</button>
-        </div>
-
-        <div class="card-item" onclick="alert('Account Settings')">
-            <div class="card-info">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                <div>
-                    <div style="font-size: 14px; font-weight: 800;">Your Account</div>
-                    <div style="font-size: 11px; color: var(--text-sub);">See account information, change password.</div>
-                </div>
-            </div>
-            <span>›</span>
-        </div>
-
-        <div class="card-item" style="border-color: rgba(255, 55, 95, 0.4);" onclick="alert('Logged out successfully!')">
-            <div class="card-info">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff375f" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-                <div>
-                    <div style="font-size: 14px; font-weight: 800; color: #ff375f;">Log Out</div>
-                    <div style="font-size: 11px; color: var(--text-sub);">Log out of @kayes_sigma</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- BOTTOM NAVIGATION BAR -->
-    <div class="bottom-nav" id="bottomNav">
-        <!-- 1. HOME -->
-        <div class="nav-link active" onclick="switchNav(this)">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
-        </div>
-        
-        <!-- 2. SEARCH -->
-        <div class="nav-link" onclick="switchNav(this); alert('Search পেজ খুলবে');">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-        </div>
-        
-        <!-- 3. CENTER PLUS BUTTON -->
-        <button class="create-post-btn" onclick="alert('+ Create Post অপশন খুলবে')">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-        </button>
-
-        <!-- 4. NOTIFICATION -->
-        <div class="nav-link" onclick="openView('notificationsModal')">
-            <div class="notification-badge"></div>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-        </div>
-
-        <!-- 5. PROFILE -->
-        <div class="nav-link" onclick="openView('profileModal')">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-        </div>
-    </div>
-
-    <script>
-        if (window.Telegram && window.Telegram.WebApp) {
-            window.Telegram.WebApp.ready();
-            window.Telegram.WebApp.expand();
-        }
-
-        function openView(id) { document.getElementById(id).style.display = 'flex'; }
-        function closeView(id) { document.getElementById(id).style.display = 'none'; }
-
-        function switchNav(elem) {
-            document.querySelectorAll('.bottom-nav .nav-link').forEach(link => link.classList.remove('active'));
-            elem.classList.add('active');
-        }
-
-        function toggleFollow(btn) {
-            if (btn.innerText === '+ Follow') {
-                btn.innerText = 'Following';
-                btn.style.background = 'rgba(0, 242, 254, 0.25)';
-            } else {
-                btn.innerText = '+ Follow';
-                btn.style.background = 'rgba(0, 242, 254, 0.12)';
-            }
-        }
-
-        function likePost(btn) {
-            let countSpan = btn.querySelector('.like-count');
-            let current = parseInt(countSpan.innerText.replace('K', '000'));
-            countSpan.innerText = current + 1;
-            btn.style.color = '#00f2fe';
-        }
-
-        function switchFeedTab(elem) {
-            document.querySelectorAll('.feed-tab').forEach(tab => tab.classList.remove('active'));
-            elem.classList.add('active');
-        }
-
-        /* AUTO-HIDE BOTTOM NAV ON SCROLL */
-        let isScrollingTimer;
-        const bottomNav = document.getElementById('bottomNav');
-
-        window.addEventListener('scroll', () => {
-            // Hide bottom nav when scrolling starts
-            bottomNav.classList.add('nav-hidden');
-
-            // Clear timer while scrolling continues
-            clearTimeout(isScrollingTimer);
-
-            // Show bottom nav after scrolling stops (800ms)
-            isScrollingTimer = setTimeout(() => {
-                bottomNav.classList.remove('nav-hidden');
-            }, 800);
+    // Create Post
+    window.createPost = async () => {
+      const text = document.getElementById('post-input').value;
+      if(!text.trim()) return alert("কিছু লিখুন!");
+      try {
+        await addDoc(collection(db, "posts"), {
+          content: text,
+          user: auth.currentUser.email,
+          createdAt: serverTimestamp()
         });
+        document.getElementById('post-input').value = '';
+      } catch (e) { alert(e.message); }
+    };
 
-        /* SMOOTH CENTER FOCUS MOTION OBSERVER */
-        const observerOptions = {
-            root: null,
-            rootMargin: '-30% 0px -30% 0px',
-            threshold: 0.2
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active-center');
-                } else {
-                    entry.target.classList.remove('active-center');
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.post-card').forEach(card => {
-            observer.observe(card);
-        });
-    </script>
+    // Live Feed Listener
+    const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
+    onSnapshot(q, (snapshot) => {
+      const postsContainer = document.getElementById('posts-container');
+      postsContainer.innerHTML = '';
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        const time = data.createdAt ? new Date(data.createdAt.seconds * 1000).toLocaleString() : 'Just now';
+        postsContainer.innerHTML += `
+          <div class="post-item">
+            <div class="post-user">${data.user || 'User'}</div>
+            <div class="post-time">${time}</div>
+            <div class="post-content">${data.content}</div>
+          </div>
+        `;
+      });
+    });
+  </script>
 </body>
-  </html>
+</html>
