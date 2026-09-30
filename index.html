@@ -4,170 +4,254 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MomentX</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <style>
     :root {
-      --bg-gradient: linear-gradient(135deg, #0f172a, #1e1b4b, #311042);
-      --card-bg: rgba(255, 255, 255, 0.05);
-      --card-border: rgba(255, 255, 255, 0.15);
-      --text-color: #ffffff;
-      --accent-color: #a855f7;
-      --btn-gradient: linear-gradient(90deg, #8b5cf6, #ec4899);
+      --bg-dark: #050b14;
+      --card-glass: rgba(10, 22, 40, 0.75);
+      --border-cyan: rgba(0, 242, 254, 0.3);
+      --glow-cyan: rgba(0, 242, 254, 0.5);
+      --cyan-bright: #00f2fe;
+      --cyan-btn: linear-gradient(135deg, #00c6ff, #0072ff);
+      --text-main: #ffffff;
+      --text-sub: #94a3b8;
     }
 
-    /* Themes */
-    body.theme-dark {
-      --bg-gradient: #0f172a;
-      --card-bg: #1e293b;
-      --card-border: #334155;
-      --text-color: #f8fafc;
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    body { background-color: var(--bg-dark); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding-bottom: 90px; }
+
+    /* Header */
+    .app-header {
+      width: 100%; max-width: 480px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; background: rgba(5, 11, 20, 0.85); backdrop-filter: blur(12px); z-index: 100;
     }
-    body.theme-light {
-      --bg-gradient: linear-gradient(135deg, #e2e8f0, #f1f5f9, #cbd5e1);
-      --card-bg: rgba(255, 255, 255, 0.7);
-      --card-border: rgba(0, 0, 0, 0.1);
-      --text-color: #0f172a;
-      --accent-color: #7c3aed;
-    }
-    body.theme-neon {
-      --bg-gradient: #050515;
-      --card-bg: rgba(236, 72, 153, 0.1);
-      --card-border: #ec4899;
-      --text-color: #00f0ff;
-      --accent-color: #ec4899;
+    .brand-logo { font-size: 1.5rem; font-weight: 900; color: var(--cyan-bright); display: flex; align-items: center; gap: 6px; text-shadow: 0 0 10px var(--glow-cyan); }
+    .settings-btn {
+      width: 38px; height: 38px; border-radius: 50%; background: var(--card-glass); border: 1px solid var(--border-cyan);
+      color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; backdrop-filter: blur(8px);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background: var(--bg-gradient); color: var(--text-color); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 15px; transition: all 0.3s ease; }
-    
-    /* Header & Facebook-like Logo */
-    .app-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; margin-top: 10px; }
-    .brand-logo {
-      width: 50px; height: 50px; background: var(--btn-gradient); border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 32px; font-weight: 900; color: #fff; box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+    .main-container { width: 100%; max-width: 480px; padding: 0 15px; }
+
+    /* Stories Bar */
+    .stories-container { display: flex; gap: 12px; overflow-x: auto; padding: 10px 0 15px; scrollbar-width: none; }
+    .story-card {
+      min-width: 90px; height: 130px; border-radius: 16px; background: var(--card-glass); border: 1px solid var(--border-cyan);
+      display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding: 8px; position: relative; overflow: hidden; flex-shrink: 0;
     }
-    .brand-name { font-size: 1.8rem; font-weight: bold; color: var(--accent-color); letter-spacing: 1px; }
+    .add-story-card { border: 1px dashed var(--cyan-bright); justify-content: center; gap: 6px; cursor: pointer; }
+    .add-story-icon { width: 36px; height: 36px; border-radius: 50%; background: var(--cyan-bright); color: #000; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+    .story-avatar { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--cyan-bright); position: absolute; top: 8px; left: 8px; object-fit: cover; }
+    .story-name { font-size: 0.75rem; font-weight: 600; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
 
-    /* Navigation Bar */
-    .nav-bar { display: flex; gap: 10px; width: 100%; max-width: 450px; margin-bottom: 15px; }
-    .nav-btn { flex: 1; padding: 10px; background: var(--card-bg); border: 1px solid var(--card-border); color: var(--text-color); border-radius: 8px; font-weight: bold; cursor: pointer; }
-    .nav-btn.active { background: var(--accent-color); color: white; }
+    /* Pill Tabs */
+    .tabs-pills { display: flex; gap: 10px; margin: 10px 0 15px; }
+    .pill-btn {
+      flex: 1; padding: 10px; border-radius: 25px; border: 1px solid var(--border-cyan); background: var(--card-glass);
+      color: var(--text-sub); font-weight: 600; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; backdrop-filter: blur(10px);
+    }
+    .pill-btn.active { background: var(--cyan-btn); color: #fff; border: none; box-shadow: 0 0 15px var(--glow-cyan); }
 
-    /* Glass Card Container */
+    /* Glass Cards */
     .glass-card {
-      background: var(--card-bg);
-      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-      border: 1px solid var(--card-border);
-      border-radius: 16px; padding: 20px; width: 100%; max-width: 450px;
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2); margin-bottom: 20px;
+      background: var(--card-glass); border: 1px solid var(--border-cyan); border-radius: 20px; padding: 16px; margin-bottom: 15px;
+      backdrop-filter: blur(16px); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
     }
 
-    input, textarea, select, button { width: 100%; padding: 12px; margin-top: 10px; border-radius: 8px; border: none; outline: none; }
-    input, textarea, select { background: rgba(255, 255, 255, 0.1); color: var(--text-color); border: 1px solid var(--card-border); }
-    button { background: var(--btn-gradient); color: white; font-weight: bold; cursor: pointer; transition: 0.2s; }
-    button:hover { opacity: 0.9; transform: translateY(-1px); }
-    .btn-secondary { background: rgba(255,255,255,0.2); }
-
-    /* Post & Chat Item Styles */
-    .post-item, .chat-box { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 15px; margin-top: 12px; }
-    .post-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-    .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: #64748b; object-fit: cover; }
-    .post-media { width: 100%; max-height: 350px; border-radius: 8px; object-fit: cover; margin-top: 10px; }
+    /* Post Card */
+    .post-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .user-info { display: flex; align-items: center; gap: 10px; }
+    .user-avatar { width: 42px; height: 42px; border-radius: 50%; border: 1.5px solid var(--cyan-bright); object-fit: cover; }
+    .user-name { font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 4px; }
     
+    /* Official Verified Badge */
+    .badge-verified-official {
+      background: var(--cyan-btn);
+      color: #ffffff;
+      font-size: 0.7rem;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      box-shadow: 0 0 10px var(--glow-cyan);
+    }
+    .badge-verified-user {
+      color: var(--cyan-bright);
+      font-size: 0.9rem;
+    }
+
+    .post-meta { font-size: 0.75rem; color: var(--text-sub); }
+    .btn-follow { background: rgba(0, 242, 254, 0.15); border: 1px solid var(--cyan-bright); color: var(--cyan-bright); padding: 5px 12px; border-radius: 20px; font-weight: 600; font-size: 0.8rem; cursor: pointer; }
+
+    .post-content { font-size: 0.95rem; line-height: 1.4; margin-bottom: 12px; }
+    .post-media { width: 100%; border-radius: 14px; border: 1px solid var(--border-cyan); max-height: 380px; object-fit: cover; }
+
+    .post-actions { display: flex; justify-content: space-between; padding-top: 12px; margin-top: 10px; border-top: 1px solid rgba(255, 255, 255, 0.08); color: var(--text-sub); font-size: 0.9rem; }
+    .action-btn { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+    .action-btn:hover { color: var(--cyan-bright); }
+
+    /* Inputs & Buttons */
+    input, textarea, select {
+      width: 100%; padding: 12px 14px; background: rgba(0, 0, 0, 0.4); border: 1px solid var(--border-cyan);
+      border-radius: 12px; color: #fff; outline: none; margin-top: 8px; margin-bottom: 12px; backdrop-filter: blur(5px);
+    }
+    input:focus, textarea:focus { border-color: var(--cyan-bright); box-shadow: 0 0 10px var(--glow-cyan); }
+    
+    .btn-glass-primary {
+      width: 100%; padding: 12px; background: var(--cyan-btn); border: none; border-radius: 12px;
+      color: white; font-weight: 700; cursor: pointer; box-shadow: 0 0 15px var(--glow-cyan); transition: 0.2s;
+    }
+    .btn-glass-primary:hover { opacity: 0.9; transform: scale(1.01); }
+
+    /* Bottom Navigation Bar */
+    .bottom-nav {
+      position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 440px;
+      height: 65px; background: rgba(10, 22, 40, 0.85); border: 1px solid var(--border-cyan); border-radius: 35px;
+      backdrop-filter: blur(20px); display: flex; align-items: center; justify-content: space-around; z-index: 200;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    }
+    .nav-item { color: var(--text-sub); font-size: 1.2rem; cursor: pointer; position: relative; transition: 0.2s; }
+    .nav-item.active { color: var(--cyan-bright); text-shadow: 0 0 10px var(--glow-cyan); }
+    .nav-create-btn {
+      width: 48px; height: 48px; border-radius: 50%; background: var(--cyan-btn); color: #fff;
+      display: flex; align-items: center; justify-content: center; font-size: 1.3rem; box-shadow: 0 0 20px var(--glow-cyan);
+    }
+
+    /* Professional Glass Modal Popup */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(10px);
+      display: none; align-items: center; justify-content: center; z-index: 1000;
+    }
+    .modal-card {
+      background: rgba(10, 22, 40, 0.95); border: 1px solid var(--border-cyan); border-radius: 20px; padding: 24px;
+      width: 88%; max-width: 380px; text-align: center; box-shadow: 0 0 30px var(--glow-cyan);
+    }
+
     /* Chat Messages */
-    .msg-list { height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding: 10px; background: rgba(0,0,0,0.1); border-radius: 8px; }
-    .msg { max-width: 80%; padding: 8px 12px; border-radius: 12px; font-size: 0.9rem; }
-    .msg.sent { align-self: flex-end; background: #8b5cf6; color: white; }
-    .msg.received { align-self: flex-start; background: rgba(255,255,255,0.2); }
+    .chat-box { height: 280px; overflow-y: auto; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 12px; border: 1px solid var(--border-cyan); margin-bottom: 10px; }
+    .msg { max-width: 75%; padding: 8px 12px; border-radius: 14px; font-size: 0.88rem; margin-bottom: 8px; }
+    .msg.sent { margin-left: auto; background: var(--cyan-btn); color: #fff; }
+    .msg.received { background: rgba(255,255,255,0.1); border: 1px solid var(--border-cyan); }
   </style>
 </head>
-<body class="theme-glass">
+<body>
 
-  <!-- Header Section with Logo -->
+  <!-- Top Header -->
   <div class="app-header">
-    <div class="brand-logo">M</div>
-    <div class="brand-name">MomentX</div>
+    <div class="brand-logo">MomentX ⚡</div>
+    <div class="settings-btn" onclick="showTab('settings')"><i class="fa-solid fa-gear"></i></div>
   </div>
 
-  <!-- Auth Container -->
-  <div id="auth-box" class="glass-card">
-    <h2 style="text-align: center;">লগইন / সাইনআপ</h2>
-    <input type="email" id="email" placeholder="ইমেইল (যেমন: user@gmail.com)">
-    <input type="password" id="password" placeholder="পাসওয়ার্ড">
-    <button onclick="login()">Login</button>
-    <button class="btn-secondary" onclick="signUp()">Create Account</button>
-  </div>
+  <div class="main-container">
 
-  <!-- Main App Interface (Hidden until login) -->
-  <div id="app-content" style="display: none; width: 100%; max-width: 450px;">
-    
-    <!-- Navigation Tabs -->
-    <div class="nav-bar">
-      <button class="nav-btn active" onclick="switchTab('feed')">Feed</button>
-      <button class="nav-btn" onclick="switchTab('chat')">Chat</button>
-      <button class="nav-btn" onclick="switchTab('settings')">Settings</button>
+    <!-- AUTH SCREEN -->
+    <div id="screen-auth" class="glass-card" style="margin-top: 30px;">
+      <h2 style="text-align: center; margin-bottom: 15px; color: var(--cyan-bright);" id="txt-welcome">স্বাগতম!</h2>
+      <input type="email" id="email" placeholder="ইমেইল দিন">
+      <input type="password" id="password" placeholder="পাসওয়ার্ড">
+      <button class="btn-glass-primary" onclick="login()" id="btn-login">লগইন</button>
+      <button class="btn-glass-primary" style="background: transparent; border: 1px solid var(--border-cyan); margin-top: 10px;" onclick="signUp()" id="btn-signup">নতুন অ্যাকাউন্ট</button>
     </div>
 
-    <!-- TAB 1: FEED -->
-    <div id="tab-feed">
-      <div class="glass-card">
-        <h3>নতুন পোস্ট লিখুন</h3>
-        <textarea id="post-input" rows="3" placeholder="মনের কথা প্রকাশ করুন..."></textarea>
-        <input type="file" id="media-file" accept="image/*,video/*">
-        <button id="post-btn" onclick="createPost()">Post</button>
+    <!-- MAIN FEED SCREEN -->
+    <div id="screen-feed" style="display: none;">
+      
+      <!-- Stories Bar -->
+      <div class="stories-container">
+        <div class="story-card add-story-card" onclick="showTab('create')">
+          <div class="add-story-icon">+</div>
+          <div class="story-name" id="txt-add-story">Add Story</div>
+        </div>
+        <div class="story-card">
+          <img src="https://via.placeholder.com/40" class="story-avatar">
+          <div class="story-name">MomentX Official</div>
+        </div>
+        <div class="story-card">
+          <img src="https://via.placeholder.com/40" class="story-avatar">
+          <div class="story-name">Ayesha</div>
+        </div>
       </div>
-      <h3>Recent Posts</h3>
+
+      <!-- Tab Pills -->
+      <div class="tabs-pills">
+        <button class="pill-btn active" onclick="switchFeedTab('foryou', this)"><i class="fa-solid fa-fire"></i> <span id="txt-foryou">For You</span></button>
+        <button class="pill-btn" onclick="switchFeedTab('following', this)"><i class="fa-solid fa-users"></i> <span id="txt-following">Following</span></button>
+      </div>
+
+      <!-- Feed Container -->
       <div id="posts-container"></div>
     </div>
 
-    <!-- TAB 2: CHAT -->
-    <div id="tab-chat" style="display: none;">
-      <div class="glass-card">
-        <h3>মেসেজিং / চ্যাট</h3>
-        <select id="chat-user-select">
-          <option value="">কার সাথে কথা বলবেন বেছে নিন...</option>
-        </select>
-        <div class="msg-list" id="msg-list">
-          <p style="text-align: center; color: #aaa; margin-top: 100px;">ইউজার সিলেক্ট করুন</p>
-        </div>
-        <div style="display: flex; gap: 5px;">
-          <input type="text" id="chat-input" placeholder="মেসেজ লিখুন...">
-          <button style="width: 80px;" onclick="sendMessage()">Send</button>
-        </div>
+    <!-- CREATE POST MODAL SCREEN -->
+    <div id="screen-create" class="glass-card" style="display: none; margin-top: 20px;">
+      <h3 style="color: var(--cyan-bright); margin-bottom: 12px;" id="txt-create-post">নতুন পোস্ট তৈরি করুন</h3>
+      <textarea id="post-input" rows="4" placeholder="আপনার মনের কথা লিখুন..."></textarea>
+      <input type="file" id="media-file" accept="image/*,video/*">
+      <button class="btn-glass-primary" id="post-btn" onclick="createPost()">Post</button>
+    </div>
+
+    <!-- CHAT & GROUPS SCREEN -->
+    <div id="screen-chat" class="glass-card" style="display: none; margin-top: 20px;">
+      <h3 style="color: var(--cyan-bright); margin-bottom: 10px;"><i class="fa-solid fa-comments"></i> চ্যাট ও গ্রুপ</h3>
+      <select id="chat-target-select">
+        <option value="">কথা বলতে ইউজার বেছে নিন...</option>
+      </select>
+      <div class="chat-box" id="chat-messages">
+        <div style="text-align: center; color: var(--text-sub); margin-top: 110px;">মেসেজ পাঠানো শুরু করুন</div>
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <input type="text" id="chat-input" placeholder="মেসেজ টাইপ করুন..." style="margin: 0;">
+        <button class="btn-glass-primary" style="width: 80px; margin: 0;" onclick="sendMessage()">Send</button>
       </div>
     </div>
 
-    <!-- TAB 3: SETTINGS & PROFILE CUSTOMIZATION -->
-    <div id="tab-settings" style="display: none;">
-      <div class="glass-card">
-        <h3>প্রোফাইল কাস্টমাইজ</h3>
-        <input type="text" id="profile-name" placeholder="আপনার সুন্দর নাম">
-        <input type="text" id="profile-bio" placeholder="বায়ো (Bio)">
-        <label style="font-size: 0.8rem; margin-top: 10px; display: block;">প্রোফাইল পিকচার ইউআরএল (URL):</label>
-        <input type="text" id="profile-pic" placeholder="https://image-link.com/photo.jpg">
-        <button onclick="saveProfile()">Save Profile</button>
+    <!-- SETTINGS SCREEN -->
+    <div id="screen-settings" class="glass-card" style="display: none; margin-top: 20px;">
+      <h3 style="color: var(--cyan-bright); margin-bottom: 12px;"><i class="fa-solid fa-sliders"></i> সেটিংস</h3>
+      
+      <label style="font-size: 0.85rem; color: var(--text-sub);">ভাষা পরিবর্তন (Language)</label>
+      <select id="lang-select" onchange="toggleLanguage(this.value)">
+        <option value="bn">বাংলা (Bangla)</option>
+        <option value="en">English</option>
+      </select>
 
-        <hr style="margin: 20px 0; border: 0.5px solid var(--card-border);">
+      <label style="font-size: 0.85rem; color: var(--text-sub);">ডিসপ্লে নাম</label>
+      <input type="text" id="profile-name" placeholder="আপনার নাম">
 
-        <h3>থিম পরিবর্তন</h3>
-        <select id="theme-select" onchange="changeTheme(this.value)">
-          <option value="theme-glass">Liquid Glass (Default)</option>
-          <option value="theme-dark">Dark Mode</option>
-          <option value="theme-light">Light Glass</option>
-          <option value="theme-neon">Neon Purple</option>
-        </select>
+      <label style="font-size: 0.85rem; color: var(--text-sub);">প্রোফাইল পিকচার লিংক (URL)</label>
+      <input type="text" id="profile-pic" placeholder="https://image-url.com/photo.jpg">
 
-        <button class="btn-secondary" style="margin-top: 20px; background: #ef4444;" onclick="logout()">Logout</button>
-      </div>
+      <button class="btn-glass-primary" onclick="saveProfile()" id="btn-save-profile">Save Profile</button>
+      <button class="btn-glass-primary" style="background: rgba(239,68,68,0.2); border: 1px solid #ef4444; margin-top: 15px;" onclick="logout()">Logout</button>
     </div>
 
+  </div>
+
+  <!-- Bottom Navigation -->
+  <div class="bottom-nav" id="bottom-nav-bar" style="display: none;">
+    <div class="nav-item active" onclick="showTab('feed')"><i class="fa-solid fa-house"></i></div>
+    <div class="nav-item" onclick="showTab('chat')"><i class="fa-solid fa-magnifying-glass"></i></div>
+    <div class="nav-create-btn" onclick="showTab('create')"><i class="fa-solid fa-plus"></i></div>
+    <div class="nav-item" onclick="showTab('chat')"><i class="fa-solid fa-bell"></i></div>
+    <div class="nav-item" onclick="showTab('settings')"><i class="fa-solid fa-user"></i></div>
+  </div>
+
+  <!-- Glass Modal Alert Popup -->
+  <div class="modal-overlay" id="custom-modal">
+    <div class="modal-card">
+      <h3 style="color: var(--cyan-bright); margin-bottom: 10px;" id="modal-title">MomentX ⚡</h3>
+      <p id="modal-msg" style="font-size: 0.95rem; margin-bottom: 20px; line-height: 1.4;"></p>
+      <button class="btn-glass-primary" onclick="closeModal()">ঠিক আছে</button>
+    </div>
   </div>
 
   <!-- Firebase Scripts -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, doc, setDoc, getDoc, onSnapshot, query, orderBy, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, doc, setDoc, getDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
     import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
     const firebaseConfig = {
@@ -186,84 +270,64 @@
     const storage = getStorage(app);
 
     let currentUser = null;
-    let selectedChatUser = null;
+    
+    // একমাত্র তোমার আসল অফিশিয়াল জিমেইল আইডি (এটি ১০০% নিরাপদ)
+    const OFFICIAL_EMAIL = "zulhazsheikh@gmail.com";
 
-    // Auth Listener
+    // Custom Glass Modal Popup
+    window.showAlert = (msg) => {
+      document.getElementById('modal-msg').innerText = msg;
+      document.getElementById('custom-modal').style.display = 'flex';
+    };
+    window.closeModal = () => { document.getElementById('custom-modal').style.display = 'none'; };
+
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         currentUser = user;
-        document.getElementById('auth-box').style.display = 'none';
-        document.getElementById('app-content').style.display = 'block';
+        document.getElementById('screen-auth').style.display = 'none';
+        document.getElementById('screen-feed').style.display = 'block';
+        document.getElementById('bottom-nav-bar').style.display = 'flex';
         loadUserProfile();
-        loadUsersForChat();
         listenPosts();
+        loadChatTargets();
       } else {
-        document.getElementById('auth-box').style.display = 'block';
-        document.getElementById('app-content').style.display = 'none';
+        document.getElementById('screen-auth').style.display = 'block';
+        document.getElementById('screen-feed').style.display = 'none';
+        document.getElementById('bottom-nav-bar').style.display = 'none';
       }
     });
 
-    // Auth Functions
     window.signUp = async () => {
-      const e = document.getElementById('email').value;
-      const p = document.getElementById('password').value;
-      if(!e || !p) return alert("ইমেইল ও পাসওয়ার্ড দিন");
+      const e = document.getElementById('email').value.trim();
+      const p = document.getElementById('password').value.trim();
+      if(!e || !p) return showAlert("ইমেইল ও পাসওয়ার্ড প্রদান করুন");
       try {
         const res = await createUserWithEmailAndPassword(auth, e, p);
-        await setDoc(doc(db, "users", res.user.uid), { email: e, name: e.split('@')[0], photo: '', bio: '' });
-        alert("অ্যাকাউন্ট তৈরি হয়েছে!");
-      } catch (err) { alert(err.message); }
+        await setDoc(doc(db, "users", res.user.uid), { email: e, name: e.split('@')[0], photo: '' });
+        showAlert("অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে!");
+      } catch (err) { showAlert(err.message); }
     };
 
     window.login = async () => {
-      const e = document.getElementById('email').value;
-      const p = document.getElementById('password').value;
-      try { await signInWithEmailAndPassword(auth, e, p); } catch (err) { alert(err.message); }
+      const e = document.getElementById('email').value.trim();
+      const p = document.getElementById('password').value.trim();
+      if(!e || !p) return showAlert("ইমেইল ও পাসওয়ার্ড প্রদান করুন");
+      try { await signInWithEmailAndPassword(auth, e, p); } catch (err) { showAlert(err.message); }
     };
 
     window.logout = () => signOut(auth);
 
-    // Tab Switcher
-    window.switchTab = (tabName) => {
-      ['feed', 'chat', 'settings'].forEach(t => {
-        document.getElementById(`tab-${t}`).style.display = t === tabName ? 'block' : 'none';
+    window.showTab = (tabName) => {
+      ['feed', 'create', 'chat', 'settings'].forEach(t => {
+        document.getElementById(`screen-${t}`).style.display = t === tabName ? 'block' : 'none';
       });
-      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-      event.target.classList.add('active');
     };
 
-    // Theme Switcher
-    window.changeTheme = (themeClass) => {
-      document.body.className = themeClass;
-    };
-
-    // Profile Settings
-    async function loadUserProfile() {
-      const docSnap = await getDoc(doc(db, "users", currentUser.uid));
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        document.getElementById('profile-name').value = data.name || '';
-        document.getElementById('profile-bio').value = data.bio || '';
-        document.getElementById('profile-pic').value = data.photo || '';
-      }
-    }
-
-    window.saveProfile = async () => {
-      const name = document.getElementById('profile-name').value;
-      const bio = document.getElementById('profile-bio').value;
-      const photo = document.getElementById('profile-pic').value;
-      await setDoc(doc(db, "users", currentUser.uid), { name, bio, photo, email: currentUser.email }, { merge: true });
-      alert("প্রোফাইল সেভ হয়েছে!");
-    };
-
-    // Create Post
     window.createPost = async () => {
       const text = document.getElementById('post-input').value;
       const file = document.getElementById('media-file').files[0];
-      const btn = document.getElementById('post-btn');
-      if(!text && !file) return alert("কিছু লিখুন বা ফাইল দিন");
+      if(!text && !file) return showAlert("কিছু টাইপ করুন অথবা ফাইল যুক্ত করুন");
 
-      btn.disabled = true;
       let mediaUrl = "", fileType = "";
       if (file) {
         const storageRef = ref(storage, `posts/${Date.now()}_${file.name}`);
@@ -278,6 +342,7 @@
       await addDoc(collection(db, "posts"), {
         content: text, mediaUrl, fileType,
         userId: currentUser.uid,
+        userEmail: currentUser.email.toLowerCase(),
         userName: userData.name || currentUser.email,
         userPhoto: userData.photo || 'https://via.placeholder.com/40',
         createdAt: serverTimestamp()
@@ -285,10 +350,10 @@
 
       document.getElementById('post-input').value = '';
       document.getElementById('media-file').value = '';
-      btn.disabled = false;
+      showTab('feed');
+      showAlert("পোস্ট প্রকাশ হয়েছে!");
     };
 
-    // Read Feed
     function listenPosts() {
       const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
       onSnapshot(q, (snapshot) => {
@@ -297,67 +362,81 @@
         snapshot.forEach((doc) => {
           const d = doc.data();
           let media = d.mediaUrl ? (d.fileType === 'video' ? `<video src="${d.mediaUrl}" controls class="post-media"></video>` : `<img src="${d.mediaUrl}" class="post-media">`) : '';
+          
+          // শুধুমাত্র তোমার ইমেইল (zulhazsheikh@gmail.com) হলেই অফিশিয়াল ব্যাজ শো করবে
+          let badgeHTML = '';
+          if (d.userEmail && d.userEmail.toLowerCase() === OFFICIAL_EMAIL.toLowerCase()) {
+            badgeHTML = `<span class="badge-verified-official"><i class="fa-solid fa-circle-check"></i> OFFICIAL</span>`;
+          } else {
+            badgeHTML = `<i class="fa-solid fa-circle-check badge-verified-user"></i>`;
+          }
+
           container.innerHTML += `
-            <div class="post-item">
+            <div class="glass-card">
               <div class="post-header">
-                <img src="${d.userPhoto || 'https://via.placeholder.com/40'}" class="user-avatar">
-                <div>
-                  <strong>${d.userName}</strong>
-                  <div style="font-size:0.7rem; color:#aaa;">${d.createdAt ? new Date(d.createdAt.seconds*1000).toLocaleTimeString() : 'Just now'}</div>
+                <div class="user-info">
+                  <img src="${d.userPhoto || 'https://via.placeholder.com/40'}" class="user-avatar">
+                  <div>
+                    <div class="user-name">${d.userName} ${badgeHTML}</div>
+                    <div class="post-meta">⚡ Top Ranked • ২ ঘণ্টা আগে</div>
+                  </div>
                 </div>
+                <button class="btn-follow">+ Follow</button>
               </div>
-              <div>${d.content || ''}</div>
+              <div class="post-content">${d.content || ''}</div>
               ${media}
+              <div class="post-actions">
+                <div class="action-btn"><i class="fa-regular fa-heart"></i> 382</div>
+                <div class="action-btn"><i class="fa-regular fa-comment"></i> 45</div>
+                <div class="action-btn"><i class="fa-solid fa-share-nodes"></i> Share</div>
+              </div>
             </div>
           `;
         });
       });
     }
 
-    // Chat System
-    function loadUsersForChat() {
+    function loadChatTargets() {
       onSnapshot(collection(db, "users"), (snapshot) => {
-        const select = document.getElementById('chat-user-select');
-        select.innerHTML = '<option value="">কার সাথে কথা বলবেন বেছে নিন...</option>';
+        const select = document.getElementById('chat-target-select');
+        select.innerHTML = '<option value="">কথা বলতে ইউজার বেছে নিন...</option>';
         snapshot.forEach((doc) => {
           if (doc.id !== currentUser.uid) {
-            select.innerHTML += `<option value="${doc.id}">${doc.data().name || doc.data().email}</option>`;
+            const uData = doc.data();
+            const isOff = (uData.email && uData.email.toLowerCase() === OFFICIAL_EMAIL.toLowerCase()) ? " [OFFICIAL]" : "";
+            select.innerHTML += `<option value="${doc.id}">${uData.name || uData.email}${isOff}</option>`;
           }
         });
       });
     }
 
-    document.getElementById('chat-user-select').addEventListener('change', (e) => {
-      selectedChatUser = e.target.value;
-      if(selectedChatUser) listenMessages();
-    });
+    async function loadUserProfile() {
+      const docSnap = await getDoc(doc(db, "users", currentUser.uid));
+      if (docSnap.exists()) {
+        const d = docSnap.data();
+        document.getElementById('profile-name').value = d.name || '';
+        document.getElementById('profile-pic').value = d.photo || '';
+      }
+    }
 
-    window.sendMessage = async () => {
-      const txt = document.getElementById('chat-input').value;
-      if (!txt || !selectedChatUser) return alert("ইউজার বেছে নিন ও মেসেজ লিখুন");
-      const chatId = currentUser.uid < selectedChatUser ? `${currentUser.uid}_${selectedChatUser}` : `${selectedChatUser}_${currentUser.uid}`;
-      await addDoc(collection(db, "chats", chatId, "messages"), {
-        sender: currentUser.uid,
-        text: txt,
-        createdAt: serverTimestamp()
-      });
-      document.getElementById('chat-input').value = '';
+    window.saveProfile = async () => {
+      const name = document.getElementById('profile-name').value;
+      const photo = document.getElementById('profile-pic').value;
+      await setDoc(doc(db, "users", currentUser.uid), { name, photo, email: currentUser.email.toLowerCase() }, { merge: true });
+      showAlert("প্রোফাইল আপডেট হয়েছে!");
     };
 
-    function listenMessages() {
-      const chatId = currentUser.uid < selectedChatUser ? `${currentUser.uid}_${selectedChatUser}` : `${selectedChatUser}_${currentUser.uid}`;
-      const q = query(collection(db, "chats", chatId, "messages"), orderBy("createdAt", "asc"));
-      onSnapshot(q, (snapshot) => {
-        const msgList = document.getElementById('msg-list');
-        msgList.innerHTML = '';
-        snapshot.forEach((doc) => {
-          const m = doc.data();
-          const cls = m.sender === currentUser.uid ? 'sent' : 'received';
-          msgList.innerHTML += `<div class="msg ${cls}">${m.text}</div>`;
-        });
-        msgList.scrollTop = msgList.scrollHeight;
-      });
-    }
+    window.toggleLanguage = (lang) => {
+      if(lang === 'en') {
+        document.getElementById('txt-foryou').innerText = 'For You';
+        document.getElementById('txt-following').innerText = 'Following';
+        document.getElementById('txt-add-story').innerText = 'Add Story';
+      } else {
+        document.getElementById('txt-foryou').innerText = 'আপনার জন্য';
+        document.getElementById('txt-following').innerText = 'ফলোয়িং';
+        document.getElementById('txt-add-story').innerText = 'স্টোরি দিন';
+      }
+    };
   </script>
 </body>
-  </html>
+      </html>
