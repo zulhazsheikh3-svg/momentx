@@ -7,247 +7,230 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <style>
     :root {
-      --bg-dark: #050b14;
-      --card-glass: rgba(10, 22, 40, 0.75);
-      --border-cyan: rgba(0, 242, 254, 0.3);
-      --glow-cyan: rgba(0, 242, 254, 0.5);
-      --cyan-bright: #00f2fe;
-      --cyan-btn: linear-gradient(135deg, #00c6ff, #0072ff);
-      --text-main: #ffffff;
-      --text-sub: #94a3b8;
+      --liquid-bg: #eef2f5;
+      --glass-card: rgba(255, 255, 255, 0.7);
+      --glass-border: rgba(255, 255, 255, 0.9);
+      --glass-shadow: 8px 8px 16px #d1d9e6, -8px -8px 16px #ffffff;
+      --inset-shadow: inset 4px 4px 8px #d1d9e6, inset -4px -4px 8px #ffffff;
+      --accent-blue: #1877f2;
+      --text-main: #2d3748;
+      --text-sub: #718096;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-    body { background-color: var(--bg-dark); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding-bottom: 90px; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: var(--liquid-bg); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding-bottom: 90px; }
 
-    /* Header */
+    /* Top Header */
     .app-header {
-      width: 100%; max-width: 480px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between;
-      position: sticky; top: 0; background: rgba(5, 11, 20, 0.85); backdrop-filter: blur(12px); z-index: 100;
+      width: 100%; max-width: 480px; padding: 12px 18px; display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; background: rgba(238, 242, 245, 0.85); backdrop-filter: blur(15px); z-index: 100;
     }
-    .brand-logo { font-size: 1.5rem; font-weight: 900; color: var(--cyan-bright); display: flex; align-items: center; gap: 6px; text-shadow: 0 0 10px var(--glow-cyan); }
-    .settings-btn {
-      width: 38px; height: 38px; border-radius: 50%; background: var(--card-glass); border: 1px solid var(--border-cyan);
-      color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; backdrop-filter: blur(8px);
+    .brand-title { font-size: 1.5rem; font-weight: 800; color: var(--accent-blue); text-shadow: 1px 1px 2px #fff; }
+    .header-icons { display: flex; gap: 10px; }
+    .icon-btn-3d {
+      width: 40px; height: 40px; border-radius: 50%; background: var(--glass-card); border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-shadow); display: flex; align-items: center; justify-content: center; color: var(--text-main);
+      cursor: pointer; font-size: 1.1rem; transition: 0.2s;
+    }
+    .icon-btn-3d:active { box-shadow: var(--inset-shadow); }
+
+    .main-container { width: 100%; max-width: 480px; padding: 0 12px; }
+
+    /* What's on your mind bar */
+    .mind-card {
+      background: var(--glass-card); border: 1px solid var(--glass-border); border-radius: 20px; box-shadow: var(--glass-shadow);
+      padding: 12px 16px; display: flex; align-items: center; gap: 12px; margin: 12px 0; backdrop-filter: blur(10px);
+    }
+    .avatar-img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #fff; }
+    .mind-input-trigger {
+      flex: 1; padding: 10px 16px; background: rgba(255, 255, 255, 0.5); border: 1px solid var(--glass-border);
+      border-radius: 25px; color: var(--text-sub); font-size: 0.9rem; cursor: pointer; box-shadow: var(--inset-shadow);
     }
 
-    .main-container { width: 100%; max-width: 480px; padding: 0 15px; }
-
-    /* Stories Bar */
-    .stories-container { display: flex; gap: 12px; overflow-x: auto; padding: 10px 0 15px; scrollbar-width: none; }
+    /* Story Section */
+    .stories-bar { display: flex; gap: 10px; overflow-x: auto; padding: 5px 0 15px; scrollbar-width: none; }
     .story-card {
-      min-width: 90px; height: 130px; border-radius: 16px; background: var(--card-glass); border: 1px solid var(--border-cyan);
-      display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding: 8px; position: relative; overflow: hidden; flex-shrink: 0;
+      min-width: 95px; height: 145px; border-radius: 18px; background: var(--glass-card); border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-shadow); display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+      padding: 8px; position: relative; overflow: hidden; flex-shrink: 0; cursor: pointer;
     }
-    .add-story-card { border: 1px dashed var(--cyan-bright); justify-content: center; gap: 6px; cursor: pointer; }
-    .add-story-icon { width: 36px; height: 36px; border-radius: 50%; background: var(--cyan-bright); color: #000; display: flex; align-items: center; justify-content: center; font-weight: bold; }
-    .story-avatar { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--cyan-bright); position: absolute; top: 8px; left: 8px; object-fit: cover; }
-    .story-name { font-size: 0.75rem; font-weight: 600; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
-
-    /* Pill Tabs */
-    .tabs-pills { display: flex; gap: 10px; margin: 10px 0 15px; }
-    .pill-btn {
-      flex: 1; padding: 10px; border-radius: 25px; border: 1px solid var(--border-cyan); background: var(--card-glass);
-      color: var(--text-sub); font-weight: 600; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; backdrop-filter: blur(10px);
-    }
-    .pill-btn.active { background: var(--cyan-btn); color: #fff; border: none; box-shadow: 0 0 15px var(--glow-cyan); }
-
-    /* Glass Cards */
-    .glass-card {
-      background: var(--card-glass); border: 1px solid var(--border-cyan); border-radius: 20px; padding: 16px; margin-bottom: 15px;
-      backdrop-filter: blur(16px); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-    }
+    .create-story-card { background: #fff; justify-content: center; gap: 6px; }
+    .add-icon-3d { width: 38px; height: 38px; border-radius: 50%; background: var(--accent-blue); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; box-shadow: 0 4px 10px rgba(24, 119, 242, 0.4); }
+    .story-avatar { width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--accent-blue); position: absolute; top: 8px; left: 8px; object-fit: cover; }
+    .story-name { font-size: 0.75rem; font-weight: 700; color: var(--text-main); text-align: center; }
 
     /* Post Card */
-    .post-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .post-card {
+      background: var(--glass-card); border: 1px solid var(--glass-border); border-radius: 22px; box-shadow: var(--glass-shadow);
+      padding: 16px; margin-bottom: 16px; backdrop-filter: blur(12px);
+    }
+    .post-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
     .user-info { display: flex; align-items: center; gap: 10px; }
-    .user-avatar { width: 42px; height: 42px; border-radius: 50%; border: 1.5px solid var(--cyan-bright); object-fit: cover; }
     .user-name { font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 4px; }
     
-    /* Official Verified Badge */
-    .badge-verified-official {
-      background: var(--cyan-btn);
-      color: #ffffff;
-      font-size: 0.7rem;
-      font-weight: 800;
-      padding: 2px 7px;
-      border-radius: 12px;
-      display: inline-flex;
-      align-items: center;
-      gap: 3px;
-      box-shadow: 0 0 10px var(--glow-cyan);
-    }
-    .badge-verified-user {
-      color: var(--cyan-bright);
-      font-size: 0.9rem;
-    }
+    .badge-official { background: var(--accent-blue); color: #fff; font-size: 0.65rem; font-weight: 800; padding: 2px 6px; border-radius: 10px; }
+    .post-time { font-size: 0.75rem; color: var(--text-sub); }
+    .post-text { font-size: 0.95rem; line-height: 1.4; color: var(--text-main); margin-bottom: 10px; }
+    .post-media { width: 100%; border-radius: 16px; max-height: 380px; object-fit: cover; border: 1px solid #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
 
-    .post-meta { font-size: 0.75rem; color: var(--text-sub); }
-    .btn-follow { background: rgba(0, 242, 254, 0.15); border: 1px solid var(--cyan-bright); color: var(--cyan-bright); padding: 5px 12px; border-radius: 20px; font-weight: 600; font-size: 0.8rem; cursor: pointer; }
-
-    .post-content { font-size: 0.95rem; line-height: 1.4; margin-bottom: 12px; }
-    .post-media { width: 100%; border-radius: 14px; border: 1px solid var(--border-cyan); max-height: 380px; object-fit: cover; }
-
-    .post-actions { display: flex; justify-content: space-between; padding-top: 12px; margin-top: 10px; border-top: 1px solid rgba(255, 255, 255, 0.08); color: var(--text-sub); font-size: 0.9rem; }
-    .action-btn { display: flex; align-items: center; gap: 6px; cursor: pointer; }
-    .action-btn:hover { color: var(--cyan-bright); }
-
-    /* Inputs & Buttons */
-    input, textarea, select {
-      width: 100%; padding: 12px 14px; background: rgba(0, 0, 0, 0.4); border: 1px solid var(--border-cyan);
-      border-radius: 12px; color: #fff; outline: none; margin-top: 8px; margin-bottom: 12px; backdrop-filter: blur(5px);
-    }
-    input:focus, textarea:focus { border-color: var(--cyan-bright); box-shadow: 0 0 10px var(--glow-cyan); }
-    
-    .btn-glass-primary {
-      width: 100%; padding: 12px; background: var(--cyan-btn); border: none; border-radius: 12px;
-      color: white; font-weight: 700; cursor: pointer; box-shadow: 0 0 15px var(--glow-cyan); transition: 0.2s;
-    }
-    .btn-glass-primary:hover { opacity: 0.9; transform: scale(1.01); }
+    .post-footer { display: flex; justify-content: space-around; padding-top: 10px; margin-top: 10px; border-top: 1px solid rgba(0,0,0,0.05); color: var(--text-sub); font-size: 0.88rem; }
+    .post-action-btn { display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 6px 12px; border-radius: 12px; }
+    .post-action-btn:hover { background: rgba(255,255,255,0.6); color: var(--accent-blue); }
 
     /* Bottom Navigation Bar */
     .bottom-nav {
-      position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 440px;
-      height: 65px; background: rgba(10, 22, 40, 0.85); border: 1px solid var(--border-cyan); border-radius: 35px;
+      position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 440px; height: 65px;
+      background: rgba(255, 255, 255, 0.8); border: 1px solid var(--glass-border); border-radius: 35px; box-shadow: var(--glass-shadow);
       backdrop-filter: blur(20px); display: flex; align-items: center; justify-content: space-around; z-index: 200;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
     }
-    .nav-item { color: var(--text-sub); font-size: 1.2rem; cursor: pointer; position: relative; transition: 0.2s; }
-    .nav-item.active { color: var(--cyan-bright); text-shadow: 0 0 10px var(--glow-cyan); }
-    .nav-create-btn {
-      width: 48px; height: 48px; border-radius: 50%; background: var(--cyan-btn); color: #fff;
-      display: flex; align-items: center; justify-content: center; font-size: 1.3rem; box-shadow: 0 0 20px var(--glow-cyan);
+    .nav-item { color: var(--text-sub); font-size: 1.2rem; cursor: pointer; }
+    .nav-item.active { color: var(--accent-blue); }
+    .nav-center-btn {
+      width: 48px; height: 48px; border-radius: 50%; background: var(--accent-blue); color: #fff;
+      display: flex; align-items: center; justify-content: center; font-size: 1.3rem; box-shadow: 0 4px 15px rgba(24, 119, 242, 0.4);
     }
 
-    /* Professional Glass Modal Popup */
+    /* Facebook Style Side Menu Drawer */
+    .side-drawer {
+      position: fixed; top: 0; right: -100%; width: 85%; max-width: 380px; height: 100%; background: var(--liquid-bg);
+      box-shadow: -10px 0 30px rgba(0,0,0,0.15); z-index: 1000; transition: 0.3s ease; padding: 20px; overflow-y: auto;
+    }
+    .side-drawer.open { right: 0; }
+    .drawer-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+    .menu-card {
+      background: var(--glass-card); border: 1px solid var(--glass-border); border-radius: 16px; padding: 14px;
+      box-shadow: var(--glass-shadow); display: flex; flex-direction: column; gap: 8px; font-weight: 700; font-size: 0.9rem; cursor: pointer;
+    }
+    .menu-card i { font-size: 1.4rem; color: var(--accent-blue); }
+    .menu-list-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: var(--glass-card); border-radius: 14px; margin-bottom: 8px; border: 1px solid var(--glass-border); box-shadow: var(--glass-shadow); font-weight: 600; cursor: pointer; }
+
+    /* Modal Post Creator */
     .modal-overlay {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(10px);
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px);
       display: none; align-items: center; justify-content: center; z-index: 1000;
     }
-    .modal-card {
-      background: rgba(10, 22, 40, 0.95); border: 1px solid var(--border-cyan); border-radius: 20px; padding: 24px;
-      width: 88%; max-width: 380px; text-align: center; box-shadow: 0 0 30px var(--glow-cyan);
+    .modal-box {
+      background: var(--liquid-bg); border: 1px solid var(--glass-border); border-radius: 24px; padding: 20px;
+      width: 90%; max-width: 420px; box-shadow: var(--glass-shadow);
     }
-
-    /* Chat Messages */
-    .chat-box { height: 280px; overflow-y: auto; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 12px; border: 1px solid var(--border-cyan); margin-bottom: 10px; }
-    .msg { max-width: 75%; padding: 8px 12px; border-radius: 14px; font-size: 0.88rem; margin-bottom: 8px; }
-    .msg.sent { margin-left: auto; background: var(--cyan-btn); color: #fff; }
-    .msg.received { background: rgba(255,255,255,0.1); border: 1px solid var(--border-cyan); }
+    input, textarea, select {
+      width: 100%; padding: 12px; background: rgba(255, 255, 255, 0.6); border: 1px solid var(--glass-border);
+      border-radius: 14px; outline: none; margin-top: 8px; margin-bottom: 12px; box-shadow: var(--inset-shadow);
+    }
+    .btn-3d-primary {
+      width: 100%; padding: 12px; background: var(--accent-blue); color: white; font-weight: 700; border: none;
+      border-radius: 14px; box-shadow: 0 4px 15px rgba(24, 119, 242, 0.3); cursor: pointer; transition: 0.2s;
+    }
   </style>
 </head>
 <body>
 
   <!-- Top Header -->
   <div class="app-header">
-    <div class="brand-logo">MomentX ⚡</div>
-    <div class="settings-btn" onclick="showTab('settings')"><i class="fa-solid fa-gear"></i></div>
+    <div class="brand-title">MomentX</div>
+    <div class="header-icons">
+      <div class="icon-btn-3d"><i class="fa-solid fa-magnifying-glass"></i></div>
+      <div class="icon-btn-3d" onclick="toggleDrawer()"><i class="fa-solid fa-bars"></i></div>
+    </div>
   </div>
 
   <div class="main-container">
 
-    <!-- AUTH SCREEN -->
-    <div id="screen-auth" class="glass-card" style="margin-top: 30px;">
-      <h2 style="text-align: center; margin-bottom: 15px; color: var(--cyan-bright);" id="txt-welcome">স্বাগতম!</h2>
+    <!-- Auth Screen -->
+    <div id="screen-auth" class="post-card" style="margin-top: 30px;">
+      <h2 style="text-align: center; color: var(--accent-blue); margin-bottom: 15px;">স্বাগতম!</h2>
       <input type="email" id="email" placeholder="ইমেইল দিন">
       <input type="password" id="password" placeholder="পাসওয়ার্ড">
-      <button class="btn-glass-primary" onclick="login()" id="btn-login">লগইন</button>
-      <button class="btn-glass-primary" style="background: transparent; border: 1px solid var(--border-cyan); margin-top: 10px;" onclick="signUp()" id="btn-signup">নতুন অ্যাকাউন্ট</button>
+      <button class="btn-3d-primary" onclick="login()">লগইন করুন</button>
+      <button class="btn-3d-primary" style="background: transparent; border: 1px solid var(--accent-blue); color: var(--accent-blue); margin-top: 10px;" onclick="signUp()">নতুন অ্যাকাউন্ট তৈরি করুন</button>
     </div>
 
-    <!-- MAIN FEED SCREEN -->
+    <!-- Feed Screen -->
     <div id="screen-feed" style="display: none;">
       
+      <!-- Mind Trigger Bar -->
+      <div class="mind-card">
+        <img id="my-avatar-feed" src="https://via.placeholder.com/40" class="avatar-img">
+        <div class="mind-input-trigger" onclick="openPostModal()">What's on your mind?</div>
+        <i class="fa-solid fa-images" style="color: #45bd62; font-size: 1.2rem; cursor: pointer;" onclick="openPostModal()"></i>
+      </div>
+
       <!-- Stories Bar -->
-      <div class="stories-container">
-        <div class="story-card add-story-card" onclick="showTab('create')">
-          <div class="add-story-icon">+</div>
-          <div class="story-name" id="txt-add-story">Add Story</div>
+      <div class="stories-bar">
+        <div class="story-card create-story-card" onclick="openPostModal()">
+          <div class="add-icon-3d">+</div>
+          <div class="story-name">Create story</div>
         </div>
         <div class="story-card">
           <img src="https://via.placeholder.com/40" class="story-avatar">
-          <div class="story-name">MomentX Official</div>
-        </div>
-        <div class="story-card">
-          <img src="https://via.placeholder.com/40" class="story-avatar">
-          <div class="story-name">Ayesha</div>
+          <div class="story-name">Kayes Chowdhury</div>
         </div>
       </div>
 
-      <!-- Tab Pills -->
-      <div class="tabs-pills">
-        <button class="pill-btn active" onclick="switchFeedTab('foryou', this)"><i class="fa-solid fa-fire"></i> <span id="txt-foryou">For You</span></button>
-        <button class="pill-btn" onclick="switchFeedTab('following', this)"><i class="fa-solid fa-users"></i> <span id="txt-following">Following</span></button>
-      </div>
-
-      <!-- Feed Container -->
+      <!-- Posts List -->
       <div id="posts-container"></div>
-    </div>
-
-    <!-- CREATE POST MODAL SCREEN -->
-    <div id="screen-create" class="glass-card" style="display: none; margin-top: 20px;">
-      <h3 style="color: var(--cyan-bright); margin-bottom: 12px;" id="txt-create-post">নতুন পোস্ট তৈরি করুন</h3>
-      <textarea id="post-input" rows="4" placeholder="আপনার মনের কথা লিখুন..."></textarea>
-      <input type="file" id="media-file" accept="image/*,video/*">
-      <button class="btn-glass-primary" id="post-btn" onclick="createPost()">Post</button>
-    </div>
-
-    <!-- CHAT & GROUPS SCREEN -->
-    <div id="screen-chat" class="glass-card" style="display: none; margin-top: 20px;">
-      <h3 style="color: var(--cyan-bright); margin-bottom: 10px;"><i class="fa-solid fa-comments"></i> চ্যাট ও গ্রুপ</h3>
-      <select id="chat-target-select">
-        <option value="">কথা বলতে ইউজার বেছে নিন...</option>
-      </select>
-      <div class="chat-box" id="chat-messages">
-        <div style="text-align: center; color: var(--text-sub); margin-top: 110px;">মেসেজ পাঠানো শুরু করুন</div>
-      </div>
-      <div style="display: flex; gap: 8px;">
-        <input type="text" id="chat-input" placeholder="মেসেজ টাইপ করুন..." style="margin: 0;">
-        <button class="btn-glass-primary" style="width: 80px; margin: 0;" onclick="sendMessage()">Send</button>
-      </div>
-    </div>
-
-    <!-- SETTINGS SCREEN -->
-    <div id="screen-settings" class="glass-card" style="display: none; margin-top: 20px;">
-      <h3 style="color: var(--cyan-bright); margin-bottom: 12px;"><i class="fa-solid fa-sliders"></i> সেটিংস</h3>
-      
-      <label style="font-size: 0.85rem; color: var(--text-sub);">ভাষা পরিবর্তন (Language)</label>
-      <select id="lang-select" onchange="toggleLanguage(this.value)">
-        <option value="bn">বাংলা (Bangla)</option>
-        <option value="en">English</option>
-      </select>
-
-      <label style="font-size: 0.85rem; color: var(--text-sub);">ডিসপ্লে নাম</label>
-      <input type="text" id="profile-name" placeholder="আপনার নাম">
-
-      <label style="font-size: 0.85rem; color: var(--text-sub);">প্রোফাইল পিকচার লিংক (URL)</label>
-      <input type="text" id="profile-pic" placeholder="https://image-url.com/photo.jpg">
-
-      <button class="btn-glass-primary" onclick="saveProfile()" id="btn-save-profile">Save Profile</button>
-      <button class="btn-glass-primary" style="background: rgba(239,68,68,0.2); border: 1px solid #ef4444; margin-top: 15px;" onclick="logout()">Logout</button>
     </div>
 
   </div>
 
   <!-- Bottom Navigation -->
   <div class="bottom-nav" id="bottom-nav-bar" style="display: none;">
-    <div class="nav-item active" onclick="showTab('feed')"><i class="fa-solid fa-house"></i></div>
-    <div class="nav-item" onclick="showTab('chat')"><i class="fa-solid fa-magnifying-glass"></i></div>
-    <div class="nav-create-btn" onclick="showTab('create')"><i class="fa-solid fa-plus"></i></div>
-    <div class="nav-item" onclick="showTab('chat')"><i class="fa-solid fa-bell"></i></div>
-    <div class="nav-item" onclick="showTab('settings')"><i class="fa-solid fa-user"></i></div>
+    <div class="nav-item active" onclick="showScreen('feed')"><i class="fa-solid fa-house"></i></div>
+    <div class="nav-item" onclick="openDrawer()"><i class="fa-solid fa-users"></i></div>
+    <div class="nav-center-btn" onclick="openPostModal()"><i class="fa-solid fa-plus"></i></div>
+    <div class="nav-item"><i class="fa-solid fa-bell"></i></div>
+    <div class="nav-item" onclick="toggleDrawer()"><i class="fa-solid fa-bars"></i></div>
   </div>
 
-  <!-- Glass Modal Alert Popup -->
-  <div class="modal-overlay" id="custom-modal">
-    <div class="modal-card">
-      <h3 style="color: var(--cyan-bright); margin-bottom: 10px;" id="modal-title">MomentX ⚡</h3>
-      <p id="modal-msg" style="font-size: 0.95rem; margin-bottom: 20px; line-height: 1.4;"></p>
-      <button class="btn-glass-primary" onclick="closeModal()">ঠিক আছে</button>
+  <!-- Facebook Style Side Drawer -->
+  <div class="side-drawer" id="side-drawer">
+    <div class="drawer-header">
+      <h2 style="color: var(--text-main);">Menu</h2>
+      <div class="icon-btn-3d" onclick="toggleDrawer()"><i class="fa-solid fa-xmark"></i></div>
+    </div>
+
+    <div class="menu-list-item" style="background: #fff;">
+      <img id="drawer-user-img" src="https://via.placeholder.com/40" class="avatar-img">
+      <div>
+        <div id="drawer-user-name" style="font-size: 1rem; font-weight: 700;">Sheikh Kayes</div>
+        <div style="font-size: 0.75rem; color: var(--text-sub);">See your profile</div>
+      </div>
+    </div>
+
+    <h4 style="margin: 15px 0 10px; color: var(--text-sub);">Your shortcuts</h4>
+    <div class="menu-grid">
+      <div class="menu-card"><i class="fa-solid fa-users-rays"></i> Groups</div>
+      <div class="menu-card"><i class="fa-solid fa-bookmark"></i> Saved</div>
+      <div class="menu-card"><i class="fa-solid fa-clock-rotate-left"></i> Memories</div>
+      <div class="menu-card"><i class="fa-solid fa-store"></i> Marketplace</div>
+    </div>
+
+    <h4 style="margin: 15px 0 10px; color: var(--text-sub);">Settings & Support</h4>
+    <div class="menu-list-item"><i class="fa-solid fa-gear" style="color: var(--accent-blue);"></i> Settings & Privacy</div>
+    <div class="menu-list-item"><i class="fa-solid fa-circle-question" style="color: var(--accent-blue);"></i> Help & Support</div>
+    <div class="menu-list-item" onclick="logout()" style="color: #e53e3e;"><i class="fa-solid fa-right-from-bracket"></i> Log Out</div>
+  </div>
+
+  <!-- Post Creation Modal -->
+  <div class="modal-overlay" id="post-modal">
+    <div class="modal-box">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <h3 style="color: var(--text-main);">Create Post</h3>
+        <div class="icon-btn-3d" onclick="closePostModal()"><i class="fa-solid fa-xmark"></i></div>
+      </div>
+      <textarea id="post-input" rows="4" placeholder="What's on your mind?"></textarea>
+      
+      <div style="display: flex; gap: 10px; margin-bottom: 15px; align-items: center;">
+        <i class="fa-solid fa-image" style="color: #45bd62; font-size: 1.4rem;"></i>
+        <input type="file" id="media-file" accept="image/*,video/*" style="margin: 0;">
+      </div>
+
+      <button class="btn-3d-primary" id="post-btn" onclick="createPost()">Post</button>
     </div>
   </div>
 
-  <!-- Firebase Scripts -->
+  <!-- Firebase Integration -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -270,16 +253,11 @@
     const storage = getStorage(app);
 
     let currentUser = null;
-    
-    // একমাত্র তোমার আসল অফিশিয়াল জিমেইল আইডি (এটি ১০০% নিরাপদ)
     const OFFICIAL_EMAIL = "zulhazsheikh@gmail.com";
 
-    // Custom Glass Modal Popup
-    window.showAlert = (msg) => {
-      document.getElementById('modal-msg').innerText = msg;
-      document.getElementById('custom-modal').style.display = 'flex';
-    };
-    window.closeModal = () => { document.getElementById('custom-modal').style.display = 'none'; };
+    window.toggleDrawer = () => { document.getElementById('side-drawer').classList.toggle('open'); };
+    window.openPostModal = () => { document.getElementById('post-modal').style.display = 'flex'; };
+    window.closePostModal = () => { document.getElementById('post-modal').style.display = 'none'; };
 
     onAuthStateChanged(auth, async (user) => {
       if (user) {
@@ -289,7 +267,6 @@
         document.getElementById('bottom-nav-bar').style.display = 'flex';
         loadUserProfile();
         listenPosts();
-        loadChatTargets();
       } else {
         document.getElementById('screen-auth').style.display = 'block';
         document.getElementById('screen-feed').style.display = 'none';
@@ -300,33 +277,27 @@
     window.signUp = async () => {
       const e = document.getElementById('email').value.trim();
       const p = document.getElementById('password').value.trim();
-      if(!e || !p) return showAlert("ইমেইল ও পাসওয়ার্ড প্রদান করুন");
+      if(!e || !p) return alert("ইমেইল ও পাসওয়ার্ড দিন");
       try {
         const res = await createUserWithEmailAndPassword(auth, e, p);
         await setDoc(doc(db, "users", res.user.uid), { email: e, name: e.split('@')[0], photo: '' });
-        showAlert("অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে!");
-      } catch (err) { showAlert(err.message); }
+        alert("অ্যাকাউন্ট তৈরি হয়েছে!");
+      } catch (err) { alert(err.message); }
     };
 
     window.login = async () => {
       const e = document.getElementById('email').value.trim();
       const p = document.getElementById('password').value.trim();
-      if(!e || !p) return showAlert("ইমেইল ও পাসওয়ার্ড প্রদান করুন");
-      try { await signInWithEmailAndPassword(auth, e, p); } catch (err) { showAlert(err.message); }
+      if(!e || !p) return alert("ইমেইল ও পাসওয়ার্ড দিন");
+      try { await signInWithEmailAndPassword(auth, e, p); } catch (err) { alert(err.message); }
     };
 
     window.logout = () => signOut(auth);
 
-    window.showTab = (tabName) => {
-      ['feed', 'create', 'chat', 'settings'].forEach(t => {
-        document.getElementById(`screen-${t}`).style.display = t === tabName ? 'block' : 'none';
-      });
-    };
-
     window.createPost = async () => {
       const text = document.getElementById('post-input').value;
       const file = document.getElementById('media-file').files[0];
-      if(!text && !file) return showAlert("কিছু টাইপ করুন অথবা ফাইল যুক্ত করুন");
+      if(!text && !file) return alert("কিছু লিখুন অথবা ফাইল আপলোড করুন");
 
       let mediaUrl = "", fileType = "";
       if (file) {
@@ -350,8 +321,7 @@
 
       document.getElementById('post-input').value = '';
       document.getElementById('media-file').value = '';
-      showTab('feed');
-      showAlert("পোস্ট প্রকাশ হয়েছে!");
+      closePostModal();
     };
 
     function listenPosts() {
@@ -363,49 +333,29 @@
           const d = doc.data();
           let media = d.mediaUrl ? (d.fileType === 'video' ? `<video src="${d.mediaUrl}" controls class="post-media"></video>` : `<img src="${d.mediaUrl}" class="post-media">`) : '';
           
-          // শুধুমাত্র তোমার ইমেইল (zulhazsheikh@gmail.com) হলেই অফিশিয়াল ব্যাজ শো করবে
-          let badgeHTML = '';
-          if (d.userEmail && d.userEmail.toLowerCase() === OFFICIAL_EMAIL.toLowerCase()) {
-            badgeHTML = `<span class="badge-verified-official"><i class="fa-solid fa-circle-check"></i> OFFICIAL</span>`;
-          } else {
-            badgeHTML = `<i class="fa-solid fa-circle-check badge-verified-user"></i>`;
-          }
+          let badgeHTML = (d.userEmail && d.userEmail.toLowerCase() === OFFICIAL_EMAIL.toLowerCase()) ? `<span class="badge-official"><i class="fa-solid fa-circle-check"></i> OFFICIAL</span>` : '';
 
           container.innerHTML += `
-            <div class="glass-card">
+            <div class="post-card">
               <div class="post-header">
                 <div class="user-info">
-                  <img src="${d.userPhoto || 'https://via.placeholder.com/40'}" class="user-avatar">
+                  <img src="${d.userPhoto || 'https://via.placeholder.com/40'}" class="avatar-img">
                   <div>
                     <div class="user-name">${d.userName} ${badgeHTML}</div>
-                    <div class="post-meta">⚡ Top Ranked • ২ ঘণ্টা আগে</div>
+                    <div class="post-time">Just now</div>
                   </div>
                 </div>
-                <button class="btn-follow">+ Follow</button>
+                <i class="fa-solid fa-ellipsis" style="color: var(--text-sub); cursor: pointer;"></i>
               </div>
-              <div class="post-content">${d.content || ''}</div>
+              <div class="post-text">${d.content || ''}</div>
               ${media}
-              <div class="post-actions">
-                <div class="action-btn"><i class="fa-regular fa-heart"></i> 382</div>
-                <div class="action-btn"><i class="fa-regular fa-comment"></i> 45</div>
-                <div class="action-btn"><i class="fa-solid fa-share-nodes"></i> Share</div>
+              <div class="post-footer">
+                <div class="post-action-btn"><i class="fa-regular fa-thumbs-up"></i> Like</div>
+                <div class="post-action-btn"><i class="fa-regular fa-comment"></i> Comment</div>
+                <div class="post-action-btn"><i class="fa-solid fa-share"></i> Share</div>
               </div>
             </div>
           `;
-        });
-      });
-    }
-
-    function loadChatTargets() {
-      onSnapshot(collection(db, "users"), (snapshot) => {
-        const select = document.getElementById('chat-target-select');
-        select.innerHTML = '<option value="">কথা বলতে ইউজার বেছে নিন...</option>';
-        snapshot.forEach((doc) => {
-          if (doc.id !== currentUser.uid) {
-            const uData = doc.data();
-            const isOff = (uData.email && uData.email.toLowerCase() === OFFICIAL_EMAIL.toLowerCase()) ? " [OFFICIAL]" : "";
-            select.innerHTML += `<option value="${doc.id}">${uData.name || uData.email}${isOff}</option>`;
-          }
         });
       });
     }
@@ -414,29 +364,13 @@
       const docSnap = await getDoc(doc(db, "users", currentUser.uid));
       if (docSnap.exists()) {
         const d = docSnap.data();
-        document.getElementById('profile-name').value = d.name || '';
-        document.getElementById('profile-pic').value = d.photo || '';
+        if(d.name) document.getElementById('drawer-user-name').innerText = d.name;
+        if(d.photo) {
+          document.getElementById('my-avatar-feed').src = d.photo;
+          document.getElementById('drawer-user-img').src = d.photo;
+        }
       }
     }
-
-    window.saveProfile = async () => {
-      const name = document.getElementById('profile-name').value;
-      const photo = document.getElementById('profile-pic').value;
-      await setDoc(doc(db, "users", currentUser.uid), { name, photo, email: currentUser.email.toLowerCase() }, { merge: true });
-      showAlert("প্রোফাইল আপডেট হয়েছে!");
-    };
-
-    window.toggleLanguage = (lang) => {
-      if(lang === 'en') {
-        document.getElementById('txt-foryou').innerText = 'For You';
-        document.getElementById('txt-following').innerText = 'Following';
-        document.getElementById('txt-add-story').innerText = 'Add Story';
-      } else {
-        document.getElementById('txt-foryou').innerText = 'আপনার জন্য';
-        document.getElementById('txt-following').innerText = 'ফলোয়িং';
-        document.getElementById('txt-add-story').innerText = 'স্টোরি দিন';
-      }
-    };
   </script>
 </body>
-      </html>
+    </html>
